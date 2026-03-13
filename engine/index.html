@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kommercieel — The GTM Engine</title>
+<meta name="description" content="See how we build go-to-market engines for B2B SaaS. Outbound infrastructure, data enrichment, signal detection, and pipeline automation — layer by layer.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Mono:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VJSLVSNCGZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VJSLVSNCGZ');
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TJC9X6WN');</script>
+<!-- End Google Tag Manager -->
+<style>
+:root {
+  --black: #080808;
+  --white: #f4f0e8;
+  --gold: #c8a96e;
+  --teal: #7ab8a4;
+  --muted: #5a5650;
+  --border: rgba(255,255,255,0.07);
+  --border-teal: rgba(122,184,164,0.25);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--black); }
+body { font-family: 'Syne', sans-serif; color: var(--white); cursor: none; }
+
+#cur { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:999; transform:translate(-50%,-50%); transition:transform .15s, background .3s; }
+#cur-ring { position:fixed; width:32px; height:32px; border:1px solid rgba(200,169,110,0.35); border-radius:50%; pointer-events:none; z-index:998; transform:translate(-50%,-50%); transition:all .1s ease, border-color .3s; }
+
+.scene {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-columns: 55vw 1fr;
+}
+
+.engine-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+.engine-side::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 140px;
+  background: linear-gradient(to right, var(--black) 30%, transparent);
+  z-index: 10; pointer-events: none;
+}
+.engine-side::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; right: 0; width: 60px;
+  background: linear-gradient(to left, var(--black) 0%, transparent);
+  z-index: 10; pointer-events: none;
+}
+.engine-wrap { position: relative; right: -28vw; }
+#main-engine {
+  width: 88vh; height: 88vh;
+  max-width: 800px; max-height: 800px;
+  will-change: transform; display: block;
+}
+
+/* Indicator */
+.indicator {
+  position: fixed;
+  left: calc(55vw - 30vw - 12px);
+  top: 50%; transform: translateY(-50%);
+  z-index: 20; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center;
+}
+.indicator-line {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  transition: background 0.4s;
+}
+.indicator-tip {
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--gold);
+  transition: border-top-color 0.4s;
+}
+.indicator-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em;
+  color: var(--gold); text-transform: uppercase;
+  margin-top: 8px; opacity: 0.6;
+  transition: color 0.4s;
+}
+.indicator.teal .indicator-line { background: linear-gradient(to bottom, transparent, var(--teal)); }
+.indicator.teal .indicator-tip { border-top-color: var(--teal); }
+.indicator.teal .indicator-label { color: var(--teal); }
+
+/* Content side */
+.content-side {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 40px 52px 40px 44px;
+  border-left: 1px solid var(--border);
+  transition: border-left-color 0.4s;
+}
+.content-side.teal { border-left-color: rgba(122,184,164,0.2); }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 48px;
+  background: linear-gradient(to bottom, rgba(8,8,8,0.9), transparent);
+}
+.logo { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.logo a { color: var(--white); text-decoration: none; }
+.logo span { color: var(--gold); }
+.nav-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--black);
+  background: var(--gold); padding: 10px 22px;
+  text-decoration: none; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: none; transition: background .2s;
+}
+.nav-cta:hover { background: #d4b87a; }
+
+/* Counter */
+.section-counter {
+  position: fixed; bottom: 36px; left: 48px;
+  z-index: 50; display: flex; align-items: center; gap: 10px;
+}
+.counter-dots { display: flex; gap: 7px; align-items: center; }
+.counter-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--muted);
+  transition: background .3s, transform .3s, width .3s, border-radius .3s;
+}
+.counter-dot.engine-dot.active {
+  background: var(--gold); transform: scale(1.3);
+  width: 14px; border-radius: 3px;
+}
+.counter-dot.layer-dot { border-radius: 2px; transform: rotate(45deg); }
+.counter-dot.layer-dot.active {
+  background: var(--teal); transform: rotate(45deg) scale(1.4);
+}
+.counter-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 0.1em; margin-left: 6px; transition: color 0.3s;
+}
+.counter-label.teal { color: var(--teal); }
+
+/* Progress bar */
+.scroll-progress {
+  position: fixed; bottom: 0; left: 0;
+  height: 2px; background: var(--gold);
+  z-index: 200; transition: width 0.15s ease, background 0.4s;
+  width: 0%;
+}
+.scroll-progress.teal { background: var(--teal); }
+
+/* Scroll hint */
+.scroll-hint {
+  position: fixed; bottom: 36px; right: 48px; z-index: 50;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: opacity 0.6s;
+}
+.scroll-hint.hidden { opacity: 0; pointer-events: none; }
+.scroll-arrow {
+  width: 1px; height: 28px;
+  background: linear-gradient(to bottom, transparent, var(--muted));
+  animation: sarrow 1.5s ease-in-out infinite;
+}
+@keyframes sarrow {
+  0%,100% { opacity: 0.3; transform: scaleY(0.7); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* PANELS */
+.panels { position: relative; width: 100%; height: 100%; }
+
+.panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 100px 0 60px;
+  opacity: 0; visibility: hidden; transform: translateY(20px);
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+  pointer-events: none;
+}
+.panel.active {
+  opacity: 1; visibility: visible; transform: translateY(0);
+  pointer-events: all;
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0s;
+}
+.panel.exit-up { opacity: 0; transform: translateY(-20px); visibility: hidden; }
+.panel.exit-down { opacity: 0; transform: translateY(20px); visibility: hidden; }
+
+/* ENGINE panel styles */
+.panel-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.panel-tag::before { content:''; width:20px; height:1px; background:var(--gold); }
+
+.panel-num {
+  font-size: 90px; font-weight: 800; line-height: 1;
+  color: rgba(255,255,255,0.03);
+  letter-spacing: -0.04em; margin-bottom: -18px;
+  user-select: none;
+}
+.panel-title {
+  font-size: clamp(32px, 3.2vw, 50px);
+  font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.02em; margin-bottom: 20px;
+}
+.panel-title em { font-style: normal; color: var(--gold); }
+
+.panel-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; line-height: 1.85;
+  color: var(--muted); max-width: 360px; margin-bottom: 28px;
+}
+.panel-items {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px;
+}
+.panel-items li {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: rgba(255,255,255,0.42);
+  display: flex; gap: 10px; align-items: flex-start; line-height: 1.5;
+}
+.panel-items li::before { content:'→'; color:var(--gold); flex-shrink:0; }
+
+.panel-bottom { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+.panel-stat {
+  display: inline-flex; flex-direction: column; gap: 2px;
+  padding: 13px 18px;
+  border: 1px solid var(--border);
+  background: rgba(200,169,110,0.04);
+}
+.panel-stat-num {
+  font-size: 26px; font-weight: 800;
+  color: var(--gold); letter-spacing: -0.03em; line-height: 1;
+}
+.panel-stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.panel-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--white); background: transparent;
+  padding: 13px 22px; text-decoration: none;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: none; transition: border-color .2s, color .2s;
+}
+.panel-cta:hover { border-color: var(--gold); color: var(--gold); }
+
+/* LAYER panel styles */
+.panel.is-layer {
+  border-left: 1px dashed rgba(122,184,164,0.2);
+  padding-left: 20px;
+}
+
+.layer-type-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--teal); text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.layer-type-tag::before { content:'◈'; font-size: 10px; }
+
+.layer-bridge {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 24px;
+}
+.bridge-node {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 7px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+}
+.bridge-connector {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, rgba(122,184,164,0.3), rgba(122,184,164,0.6), rgba(122,184,164,0.3));
+  position: relative; min-width: 32px;
+}
+.bridge-connector::after {
+  content: attr(data-label);
+  position: absolute; top: -18px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em;
+  color: var(--teal); text-transform: uppercase;
+  white-space: nowrap; opacity: 0.8;
+}
+
+.layer-title {
+  font-size: clamp(28px, 2.8vw, 42px);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.02em; margin-bottom: 16px;
+}
+.layer-title em { font-style: normal; color: var(--teal); }
+
+.layer-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; line-height: 1.85;
+  color: var(--muted); max-width: 360px; margin-bottom: 24px;
+}
+.layer-items {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px;
+}
+.layer-items li {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: rgba(255,255,255,0.38);
+  display: flex; gap: 10px; align-items: flex-start; line-height: 1.5;
+}
+.layer-items li::before { content:'◌'; color: var(--teal); flex-shrink:0; font-size:11px; }
+
+.layer-stat {
+  display: inline-flex; flex-direction: column; gap: 2px;
+  padding: 13px 18px;
+  border: 1px solid rgba(122,184,164,0.2);
+  background: rgba(122,184,164,0.04);
+}
+.layer-stat .panel-stat-num { color: var(--teal); }
+
+/* Grain */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 300;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJC9X6WN"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div class="grain"></div>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div class="scroll-progress" id="progress-bar"></div>
+
+<nav>
+  <span class="logo"><a href="/">Kommer<span>cieel</span></a></span>
+  <a href="https://calendly.com/rickvandenkommer/new-meeting" class="nav-cta">Book a Call →</a>
+</nav>
+
+<div class="scene">
+
+  <!-- ENGINE SIDE -->
+  <div class="engine-side">
+    <div class="engine-wrap">
+      <svg id="main-engine" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="eng-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(200,169,110,0.1)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <circle cx="400" cy="400" r="390" fill="url(#eng-glow)"/>
+
+        <!-- Outer ticks -->
+        <g opacity="0.1" stroke="rgba(255,255,255,0.8)" stroke-width="1">
+          <g transform="rotate(0,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(15,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(30,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(45,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(60,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(75,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(90,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(105,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(120,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(135,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(150,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(165,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(180,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(195,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(210,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(225,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(240,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(255,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(270,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(285,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(300,400,400)"><line x1="400" y1="22" x2="400" y2="44"/></g>
+          <g transform="rotate(315,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+          <g transform="rotate(330,400,400)"><line x1="400" y1="22" x2="400" y2="38"/></g>
+          <g transform="rotate(345,400,400)"><line x1="400" y1="28" x2="400" y2="38"/></g>
+        </g>
+
+        <!-- Orbit rings -->
+        <circle cx="400" cy="400" r="358" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+        <circle cx="400" cy="400" r="298" stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="3 9"/>
+        <circle cx="400" cy="400" r="244" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <circle cx="400" cy="400" r="188" stroke="rgba(200,169,110,0.08)" stroke-width="1.5"/>
+        <circle cx="400" cy="400" r="128" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+        <!-- Gear body -->
+        <circle cx="400" cy="400" r="178" fill="rgba(200,169,110,0.025)" stroke="rgba(200,169,110,0.2)" stroke-width="1.5"/>
+
+        <!-- TOOTH 0 — Asset Engine -->
+        <g id="tooth-0" style="transform-origin:400px 400px">
+          <rect x="376" y="186" width="48" height="36" rx="5"
+            fill="rgba(200,169,110,0.35)" stroke="rgba(200,169,110,0.8)" stroke-width="2"/>
+          <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.6)"/>
+          <rect x="384" y="206" width="20" height="3" rx="1.5" fill="rgba(200,169,110,0.3)"/>
+        </g>
+
+        <!-- TOOTH 1 — Data Layer -->
+        <g id="tooth-1" style="transform-origin:400px 400px" transform="rotate(60,400,400)">
+          <polygon points="400,188 416,204 400,220 384,204"
+            fill="rgba(122,184,164,0.15)" stroke="rgba(122,184,164,0.6)" stroke-width="1.5"/>
+          <polygon points="400,196 408,204 400,212 392,204"
+            fill="rgba(122,184,164,0.35)" stroke="none"/>
+          <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.7)"/>
+        </g>
+
+        <!-- TOOTH 2 — Signal Engine -->
+        <g id="tooth-2" style="transform-origin:400px 400px" transform="rotate(120,400,400)">
+          <rect x="376" y="186" width="48" height="36" rx="5"
+            fill="rgba(200,169,110,0.07)" stroke="rgba(200,169,110,0.2)" stroke-width="1"/>
+          <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.2)"/>
+        </g>
+
+        <!-- TOOTH 3 — Enrichment Layer -->
+        <g id="tooth-3" style="transform-origin:400px 400px" transform="rotate(180,400,400)">
+          <polygon points="400,188 416,204 400,220 384,204"
+            fill="rgba(122,184,164,0.08)" stroke="rgba(122,184,164,0.35)" stroke-width="1.5"/>
+          <polygon points="400,196 408,204 400,212 392,204"
+            fill="rgba(122,184,164,0.2)" stroke="none"/>
+          <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.45)"/>
+        </g>
+
+        <!-- TOOTH 4 — Outbound Engine -->
+        <g id="tooth-4" style="transform-origin:400px 400px" transform="rotate(240,400,400)">
+          <rect x="376" y="186" width="48" height="36" rx="5"
+            fill="rgba(200,169,110,0.07)" stroke="rgba(200,169,110,0.2)" stroke-width="1"/>
+          <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.2)"/>
+        </g>
+
+        <!-- TOOTH 5 — Feedback Layer -->
+        <g id="tooth-5" style="transform-origin:400px 400px" transform="rotate(300,400,400)">
+          <polygon points="400,188 416,204 400,220 384,204"
+            fill="rgba(122,184,164,0.08)" stroke="rgba(122,184,164,0.35)" stroke-width="1.5"/>
+          <polygon points="400,196 408,204 400,212 392,204"
+            fill="rgba(122,184,164,0.2)" stroke="none"/>
+          <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.45)"/>
+        </g>
+
+        <!-- Spokes -->
+        <g stroke="rgba(200,169,110,0.09)" stroke-width="1.5">
+          <line x1="400" y1="272" x2="400" y2="224"/>
+          <g transform="rotate(60,400,400)"><line x1="400" y1="272" x2="400" y2="224"/></g>
+          <g transform="rotate(120,400,400)"><line x1="400" y1="272" x2="400" y2="224"/></g>
+          <g transform="rotate(180,400,400)"><line x1="400" y1="272" x2="400" y2="224"/></g>
+          <g transform="rotate(240,400,400)"><line x1="400" y1="272" x2="400" y2="224"/></g>
+          <g transform="rotate(300,400,400)"><line x1="400" y1="272" x2="400" y2="224"/></g>
+        </g>
+
+        <!-- Inner rings -->
+        <circle cx="400" cy="400" r="88" stroke="rgba(200,169,110,0.1)" stroke-width="1" stroke-dasharray="3 7"/>
+        <circle cx="400" cy="400" r="58" fill="rgba(200,169,110,0.04)" stroke="rgba(200,169,110,0.16)" stroke-width="1.5"/>
+        <circle cx="400" cy="400" r="26" fill="rgba(200,169,110,0.12)" stroke="rgba(200,169,110,0.35)" stroke-width="2"/>
+        <circle cx="400" cy="400" r="9" fill="rgba(200,169,110,0.7)"/>
+
+        <!-- Center bolt -->
+        <line x1="400" y1="374" x2="400" y2="390" stroke="rgba(0,0,0,0.5)" stroke-width="2.5"/>
+        <line x1="400" y1="410" x2="400" y2="426" stroke="rgba(0,0,0,0.5)" stroke-width="2.5"/>
+        <line x1="374" y1="400" x2="390" y2="400" stroke="rgba(0,0,0,0.5)" stroke-width="2.5"/>
+        <line x1="410" y1="400" x2="426" y2="400" stroke="rgba(0,0,0,0.5)" stroke-width="2.5"/>
+
+        <!-- Inner holes -->
+        <g fill="rgba(0,0,0,0.2)" stroke="rgba(200,169,110,0.1)" stroke-width="1">
+          <circle cx="400" cy="344" r="5"/>
+          <g transform="rotate(60,400,400)"><circle cx="400" cy="344" r="5"/></g>
+          <g transform="rotate(120,400,400)"><circle cx="400" cy="344" r="5"/></g>
+          <g transform="rotate(180,400,400)"><circle cx="400" cy="344" r="5"/></g>
+          <g transform="rotate(240,400,400)"><circle cx="400" cy="344" r="5"/></g>
+          <g transform="rotate(300,400,400)"><circle cx="400" cy="344" r="5"/></g>
+        </g>
+
+        <!-- Satellite gear top-right -->
+        <g transform="translate(575,172)" id="sat-gear-1">
+          <circle cx="0" cy="0" r="46" fill="rgba(200,169,110,0.02)" stroke="rgba(200,169,110,0.16)" stroke-width="1"/>
+          <circle cx="0" cy="0" r="18" fill="rgba(200,169,110,0.06)" stroke="rgba(200,169,110,0.16)" stroke-width="1"/>
+          <circle cx="0" cy="0" r="6" fill="rgba(200,169,110,0.26)"/>
+          <rect x="-6" y="-56" width="12" height="14" rx="2" fill="rgba(200,169,110,0.16)"/>
+          <rect x="-6" y="42" width="12" height="14" rx="2" fill="rgba(200,169,110,0.16)"/>
+          <rect x="-56" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.16)"/>
+          <rect x="42" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.16)"/>
+          <g transform="rotate(45)">
+            <rect x="-6" y="-56" width="12" height="14" rx="2" fill="rgba(200,169,110,0.09)"/>
+            <rect x="-6" y="42" width="12" height="14" rx="2" fill="rgba(200,169,110,0.09)"/>
+            <rect x="-56" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.09)"/>
+            <rect x="42" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.09)"/>
+          </g>
+          <line x1="0" y1="-12" x2="0" y2="12" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <line x1="-12" y1="0" x2="12" y2="0" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+        </g>
+
+        <!-- Satellite gear bottom-left -->
+        <g transform="translate(198,598)" id="sat-gear-2">
+          <circle cx="0" cy="0" r="34" fill="rgba(200,169,110,0.02)" stroke="rgba(200,169,110,0.1)" stroke-width="1"/>
+          <circle cx="0" cy="0" r="13" fill="rgba(200,169,110,0.05)" stroke="rgba(200,169,110,0.1)" stroke-width="1"/>
+          <circle cx="0" cy="0" r="4" fill="rgba(200,169,110,0.2)"/>
+          <rect x="-5" y="-44" width="10" height="12" rx="2" fill="rgba(200,169,110,0.12)"/>
+          <rect x="-5" y="32" width="10" height="12" rx="2" fill="rgba(200,169,110,0.12)"/>
+          <rect x="-44" y="-5" width="12" height="10" rx="2" fill="rgba(200,169,110,0.12)"/>
+          <rect x="32" y="-5" width="12" height="10" rx="2" fill="rgba(200,169,110,0.12)"/>
+        </g>
+
+        <!-- Dashed connectors -->
+        <line x1="548" y1="215" x2="523" y2="225" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 7"/>
+        <line x1="228" y1="564" x2="242" y2="548" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 7"/>
+      </svg>
+    </div>
+
+    <div class="indicator" id="indicator">
+      <div class="indicator-line" id="ind-line"></div>
+      <div class="indicator-tip" id="ind-tip"></div>
+      <div class="indicator-label" id="ind-label">engine</div>
+    </div>
+  </div>
+
+  <!-- CONTENT SIDE -->
+  <div class="content-side" id="content-side">
+    <div class="panels">
+
+      <!-- 0: Asset Engine -->
+      <div class="panel active" data-index="0" data-type="engine">
+        <div class="panel-num">01</div>
+        <div class="panel-tag">Engine</div>
+        <h2 class="panel-title">Prospects find <em>you</em> first</h2>
+        <p class="panel-desc">Content and lead magnets that pull your ICP in — before you ever send a cold email. Your best outbound starts with inbound.</p>
+        <ul class="panel-items">
+          <li>LinkedIn content built around real proof points</li>
+          <li>Gated playbooks that attract ICP-matched founders</li>
+          <li>Community as an always-on trust engine</li>
+          <li>Diagnostic offer as lowest-friction entry point</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="panel-stat">
+            <span class="panel-stat-num">34%</span>
+            <span class="panel-stat-label">Reply rate on asset-led outbound</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta">Book a Call →</a>
+        </div>
+      </div>
+
+      <!-- 1: Data Layer -->
+      <div class="panel is-layer" data-index="1" data-type="layer">
+        <div class="layer-type-tag">Connection Layer</div>
+        <div class="layer-bridge">
+          <div class="bridge-node">Asset Engine</div>
+          <div class="bridge-connector" data-label="feeds into"></div>
+          <div class="bridge-node">Signal Engine</div>
+        </div>
+        <h2 class="layer-title">Clean data,<br><em>zero guesswork</em></h2>
+        <p class="layer-desc">The foundation connecting what you publish to who you target. Every lead is sourced, verified, and scored before anyone touches it.</p>
+        <ul class="layer-items">
+          <li>LinkedIn Sales Nav for real-time prospect sourcing</li>
+          <li>Waterfall enrichment across 12+ data providers</li>
+          <li>Verified emails, direct dials, tech stack, funding data</li>
+          <li>Refreshed weekly — no stale lists, no bounced emails</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="layer-stat panel-stat">
+            <span class="panel-stat-num">40+</span>
+            <span class="panel-stat-label">Data points per prospect</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta" style="border-color:rgba(122,184,164,0.2);color:rgba(122,184,164,0.7)">Book a Call →</a>
+        </div>
+      </div>
+
+      <!-- 2: Signal Engine -->
+      <div class="panel" data-index="2" data-type="engine">
+        <div class="panel-num">02</div>
+        <div class="panel-tag">Engine</div>
+        <h2 class="panel-title">Know who's ready <em>this week</em></h2>
+        <p class="panel-desc">Intent signals that surface buyers actively researching your category — so you reach them at the right moment, not on an arbitrary cadence.</p>
+        <ul class="panel-items">
+          <li>Competitor content engagers (likers, commenters)</li>
+          <li>Hiring signals: GTM, SDR, and sales roles</li>
+          <li>Tech stack adoption signals (Clay, Instantly, Apollo)</li>
+          <li>ICP filter: B2B SaaS founders, Seed to Series B</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="panel-stat">
+            <span class="panel-stat-num">3x</span>
+            <span class="panel-stat-label">Higher conversion vs cold lists</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta">Book a Call →</a>
+        </div>
+      </div>
+
+      <!-- 3: Enrichment Layer -->
+      <div class="panel is-layer" data-index="3" data-type="layer">
+        <div class="layer-type-tag">Connection Layer</div>
+        <div class="layer-bridge">
+          <div class="bridge-node">Signal Engine</div>
+          <div class="bridge-connector" data-label="enriches"></div>
+          <div class="bridge-node">Outbound Engine</div>
+        </div>
+        <h2 class="layer-title">Every message<br><em>feels personal</em></h2>
+        <p class="layer-desc">Turns raw signals into personalized context. Every contact gets scored, enriched, and loaded with personalization tokens before a single sequence fires.</p>
+        <ul class="layer-items">
+          <li>Automated enrichment via Bitscale + Clay waterfall</li>
+          <li>Role, tech stack, and growth stage per prospect</li>
+          <li>ICP scoring so your SDR talks to buyers, not tourists</li>
+          <li>Auto-personalization tokens for every sequence</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="layer-stat panel-stat">
+            <span class="panel-stat-num">20h</span>
+            <span class="panel-stat-label">Saved per week on SDR research</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta" style="border-color:rgba(122,184,164,0.2);color:rgba(122,184,164,0.7)">Book a Call →</a>
+        </div>
+      </div>
+
+      <!-- 4: Outbound Engine -->
+      <div class="panel" data-index="4" data-type="engine">
+        <div class="panel-num">03</div>
+        <div class="panel-tag">Engine</div>
+        <h2 class="panel-title">Meetings that <em>book themselves</em></h2>
+        <p class="panel-desc">Multi-channel sequences triggered by intent, not arbitrary cadence. Email + LinkedIn working together so your calendar fills while you build product.</p>
+        <ul class="panel-items">
+          <li>Cold email sequences scored by live signal data</li>
+          <li>LinkedIn DM flows tied to content engagement</li>
+          <li>Personalized value props per ICP segment</li>
+          <li>Pipeline automation: replies route straight to your CRM</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="panel-stat">
+            <span class="panel-stat-num">460</span>
+            <span class="panel-stat-label">Replies from 2,600 leads</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta">Book a Call →</a>
+        </div>
+      </div>
+
+      <!-- 5: Feedback Layer -->
+      <div class="panel is-layer" data-index="5" data-type="layer">
+        <div class="layer-type-tag">Connection Layer</div>
+        <div class="layer-bridge">
+          <div class="bridge-node">Outbound Engine</div>
+          <div class="bridge-connector" data-label="compounds into"></div>
+          <div class="bridge-node">Asset Engine</div>
+        </div>
+        <h2 class="layer-title">Gets smarter<br><em>every cycle</em></h2>
+        <p class="layer-desc">The loop that closes the flywheel. Every reply, every booking, every close feeds back into targeting and content — so month 6 outperforms month 1 by default.</p>
+        <ul class="layer-items">
+          <li>Reply rates and meeting data tracked per sequence</li>
+          <li>Winning messages recycled into new content assets</li>
+          <li>ICP definition sharpened every 30 days from real data</li>
+          <li>Compounding returns: same spend, better results each month</li>
+        </ul>
+        <div class="panel-bottom">
+          <div class="layer-stat panel-stat">
+            <span class="panel-stat-num">∞</span>
+            <span class="panel-stat-label">Compounding loop</span>
+          </div>
+          <a href="https://calendly.com/rickvandenkommer/new-meeting" class="panel-cta" style="border-color:rgba(122,184,164,0.2);color:rgba(122,184,164,0.7)">Book a Call →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Bottom UI -->
+<div class="section-counter">
+  <div class="counter-dots" id="dots">
+    <div class="counter-dot engine-dot active"></div>
+    <div class="counter-dot layer-dot"></div>
+    <div class="counter-dot engine-dot"></div>
+    <div class="counter-dot layer-dot"></div>
+    <div class="counter-dot engine-dot"></div>
+    <div class="counter-dot layer-dot"></div>
+  </div>
+  <span class="counter-label" id="section-name">Asset Engine</span>
+</div>
+
+<div class="scroll-hint" id="scroll-hint">
+  <div class="scroll-arrow"></div>
+  <span>Scroll to turn</span>
+</div>
+
+<script>
+// --- Cursor ---
+const cur = document.getElementById('cur');
+const curRing = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function animCur(){
+  rx+=(mx-rx)*0.13; ry+=(my-ry)*0.13;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  curRing.style.left=rx+'px'; curRing.style.top=ry+'px';
+  requestAnimationFrame(animCur);
+})();
+document.querySelectorAll('a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';curRing.style.transform='translate(-50%,-50%) scale(1.5)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';curRing.style.transform='translate(-50%,-50%) scale(1)';});
+});
+
+// --- Config ---
+const SECTIONS = 6;
+const STEP = 60;
+const SCROLL_THRESHOLD = 220;
+const LIVE_SENSITIVITY = 0.055;
+
+const sections = [
+  { name:'Asset Engine',     type:'engine' },
+  { name:'Data Layer',       type:'layer'  },
+  { name:'Signal Engine',    type:'engine' },
+  { name:'Enrichment Layer', type:'layer'  },
+  { name:'Outbound Engine',  type:'engine' },
+  { name:'Feedback Layer',   type:'layer'  },
+];
+
+let sectionIndex = 0;
+let totalSteps = 0;
+let displayRotation = 0;
+let liveOffset = 0;
+let scrollAccum = 0;
+let hasScrolled = false;
+
+const engine = document.getElementById('main-engine');
+const panels = document.querySelectorAll('.panel');
+const dots = document.querySelectorAll('.counter-dot');
+const sectionNameEl = document.getElementById('section-name');
+const counterLabelEl = sectionNameEl;
+const scrollHint = document.getElementById('scroll-hint');
+const progressBar = document.getElementById('progress-bar');
+const indicator = document.getElementById('indicator');
+const contentSide = document.getElementById('content-side');
+const teeth = Array.from({length:6},(_,i)=>document.getElementById('tooth-'+i));
+
+// --- Render loop ---
+function renderLoop(){
+  const snapBase = -(totalSteps * STEP);
+  const fullTarget = snapBase + liveOffset;
+  const diff = fullTarget - displayRotation;
+  displayRotation += diff * 0.1;
+
+  engine.style.transform = `rotate(${displayRotation}deg)`;
+
+  const sat1 = document.getElementById('sat-gear-1');
+  const sat2 = document.getElementById('sat-gear-2');
+  if(sat1) sat1.style.transform = `rotate(${-displayRotation*1.6}deg)`;
+  if(sat2) sat2.style.transform = `rotate(${-displayRotation*2.1}deg)`;
+
+  requestAnimationFrame(renderLoop);
+}
+renderLoop();
+
+// --- Update UI for current section ---
+function updateSection(newIndex, direction) {
+  const prev = panels[sectionIndex];
+  sectionIndex = newIndex;
+  const next = panels[sectionIndex];
+  const sec = sections[sectionIndex];
+  const isLayer = sec.type === 'layer';
+
+  if(prev && prev !== next) {
+    prev.classList.remove('active');
+    prev.classList.add(direction >= 0 ? 'exit-up' : 'exit-down');
+    setTimeout(()=>prev.classList.remove('exit-up','exit-down'), 500);
+  }
+  if(next) {
+    next.style.transform = direction >= 0 ? 'translateY(20px)' : 'translateY(-20px)';
+    next.style.opacity = '0';
+    next.style.visibility = 'visible';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      next.style.transform = '';
+      next.style.opacity = '';
+      next.classList.add('active');
+    }));
+  }
+
+  dots.forEach((d,i)=>d.classList.toggle('active', i===sectionIndex));
+  sectionNameEl.textContent = sec.name;
+  sectionNameEl.classList.toggle('teal', isLayer);
+  indicator.classList.toggle('teal', isLayer);
+  contentSide.classList.toggle('teal', isLayer);
+  cur.style.background = isLayer ? 'var(--teal)' : 'var(--gold)';
+  curRing.style.borderColor = isLayer ? 'rgba(122,184,164,0.4)' : 'rgba(200,169,110,0.35)';
+  progressBar.classList.toggle('teal', isLayer);
+  progressBar.style.width = ((sectionIndex / (SECTIONS-1)) * 100) + '%';
+
+  teeth.forEach((t,i) => {
+    if(!t) return;
+    const isActive = i === sectionIndex;
+    const isTooth = sections[i].type === 'engine';
+
+    if(isTooth) {
+      const rect = t.querySelector('rect');
+      if(rect) {
+        rect.setAttribute('fill', isActive ? 'rgba(200,169,110,0.42)' : 'rgba(200,169,110,0.07)');
+        rect.setAttribute('stroke', isActive ? 'rgba(200,169,110,0.95)' : 'rgba(200,169,110,0.2)');
+        rect.setAttribute('stroke-width', isActive ? '2.5' : '1');
+      }
+    } else {
+      const polys = t.querySelectorAll('polygon');
+      const dot = t.querySelector('circle');
+      if(polys[0]) {
+        polys[0].setAttribute('fill', isActive ? 'rgba(122,184,164,0.28)' : 'rgba(122,184,164,0.08)');
+        polys[0].setAttribute('stroke', isActive ? 'rgba(122,184,164,0.95)' : 'rgba(122,184,164,0.35)');
+        polys[0].setAttribute('stroke-width', isActive ? '2' : '1.5');
+      }
+      if(polys[1]) polys[1].setAttribute('fill', isActive ? 'rgba(122,184,164,0.55)' : 'rgba(122,184,164,0.2)');
+      if(dot) {
+        dot.setAttribute('fill', isActive ? 'rgba(122,184,164,1)' : 'rgba(122,184,164,0.45)');
+        dot.setAttribute('r', isActive ? '5' : '3.5');
+      }
+    }
+  });
+}
+
+// --- Snap-back ---
+let snapTimer = null;
+function scheduleSnapBack() {
+  clearTimeout(snapTimer);
+  snapTimer = setTimeout(() => {
+    (function decay(){
+      if(Math.abs(liveOffset) < 0.3){ liveOffset = 0; return; }
+      liveOffset *= 0.82;
+      requestAnimationFrame(decay);
+    })();
+    scrollAccum = 0;
+  }, 120);
+}
+
+// --- Scroll ---
+window.addEventListener('wheel', e => {
+  e.preventDefault();
+  const dy = e.deltaY;
+  scrollAccum += dy;
+  liveOffset -= dy * LIVE_SENSITIVITY;
+  liveOffset = Math.max(-STEP*0.6, Math.min(STEP*0.6, liveOffset));
+
+  scheduleSnapBack();
+
+  if(scrollAccum >= SCROLL_THRESHOLD) {
+    scrollAccum -= SCROLL_THRESHOLD;
+    liveOffset = 0; totalSteps++;
+    updateSection(((totalSteps%SECTIONS)+SECTIONS)%SECTIONS, 1);
+    if(!hasScrolled){ hasScrolled=true; scrollHint.classList.add('hidden'); }
+  } else if(scrollAccum <= -SCROLL_THRESHOLD) {
+    scrollAccum += SCROLL_THRESHOLD;
+    liveOffset = 0; totalSteps--;
+    updateSection(((totalSteps%SECTIONS)+SECTIONS)%SECTIONS, -1);
+    if(!hasScrolled){ hasScrolled=true; scrollHint.classList.add('hidden'); }
+  }
+}, { passive: false });
+
+// --- Touch ---
+let touchStartY = 0;
+window.addEventListener('touchstart', e=>{ touchStartY=e.touches[0].clientY; },{passive:true});
+window.addEventListener('touchend', e=>{
+  const delta = touchStartY - e.changedTouches[0].clientY;
+  if(Math.abs(delta) > 50){
+    const dir = delta > 0 ? 1 : -1;
+    liveOffset=0; totalSteps+=dir;
+    updateSection(((totalSteps%SECTIONS)+SECTIONS)%SECTIONS, dir);
+  }
+},{passive:true});
+
+// --- Keyboard ---
+window.addEventListener('keydown', e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'){
+    liveOffset=0; totalSteps++;
+    updateSection(((totalSteps%SECTIONS)+SECTIONS)%SECTIONS,1);
+  }
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft'){
+    liveOffset=0; totalSteps--;
+    updateSection(((totalSteps%SECTIONS)+SECTIONS)%SECTIONS,-1);
+  }
+});
+
+// --- Init ---
+updateSection(0, 0);
+</script>
+</body>
+</html>
