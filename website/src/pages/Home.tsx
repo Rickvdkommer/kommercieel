@@ -1,8 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 const CALENDLY = 'https://calendly.com/rickvandenkommer/new-meeting';
+
+const ENGINE_SECTIONS = [
+  { name: 'Asset Engine', type: 'engine' },
+  { name: 'Data Layer', type: 'layer' },
+  { name: 'Signal Engine', type: 'engine' },
+  { name: 'Enrichment Layer', type: 'layer' },
+  { name: 'Outbound Engine', type: 'engine' },
+  { name: 'Feedback Layer', type: 'layer' },
+] as const;
 
 function SunIcon() {
   return (
@@ -45,12 +54,73 @@ export default function Home() {
     return 'dark';
   });
 
+  const [engineActive, setEngineActive] = useState(0);
+  const engineWrapRef = useRef<HTMLDivElement>(null);
+  const gearSvgRef = useRef<SVGSVGElement>(null);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('kc-theme', theme);
   }, [theme]);
 
+  // Engine scroll logic
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = engineWrapRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const scrolled = -rect.top;
+      if (scrolled < 0 || scrolled > scrollable) return;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+      const index = Math.min(5, Math.floor(progress * 6));
+      setEngineActive(index);
+      if (gearSvgRef.current) {
+        gearSvgRef.current.style.transform = `rotate(${-progress * 360}deg)`;
+      }
+      const sat1 = document.getElementById('home-sat-1');
+      const sat2 = document.getElementById('home-sat-2');
+      if (sat1) sat1.style.transform = `rotate(${progress * 360 * 1.6}deg)`;
+      if (sat2) sat2.style.transform = `rotate(${progress * 360 * 2.1}deg)`;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Tooth highlighting
+  useEffect(() => {
+    for (let i = 0; i < 6; i++) {
+      const t = document.getElementById('home-tooth-' + i);
+      if (!t) continue;
+      const isActive = i === engineActive;
+      const isEngine = ENGINE_SECTIONS[i].type === 'engine';
+      if (isEngine) {
+        const rect = t.querySelector('rect');
+        if (rect) {
+          rect.setAttribute('fill', isActive ? 'rgba(200,169,110,0.42)' : 'rgba(200,169,110,0.07)');
+          rect.setAttribute('stroke', isActive ? 'rgba(200,169,110,0.95)' : 'rgba(200,169,110,0.2)');
+          rect.setAttribute('stroke-width', isActive ? '2.5' : '1');
+        }
+      } else {
+        const polys = t.querySelectorAll('polygon');
+        const dot = t.querySelector('circle');
+        if (polys[0]) {
+          polys[0].setAttribute('fill', isActive ? 'rgba(122,184,164,0.28)' : 'rgba(122,184,164,0.08)');
+          polys[0].setAttribute('stroke', isActive ? 'rgba(122,184,164,0.95)' : 'rgba(122,184,164,0.35)');
+          polys[0].setAttribute('stroke-width', isActive ? '2' : '1.5');
+        }
+        if (polys[1]) polys[1].setAttribute('fill', isActive ? 'rgba(122,184,164,0.55)' : 'rgba(122,184,164,0.2)');
+        if (dot) {
+          dot.setAttribute('fill', isActive ? 'rgba(122,184,164,1)' : 'rgba(122,184,164,0.45)');
+          dot.setAttribute('r', isActive ? '5' : '3.5');
+        }
+      }
+    }
+  }, [engineActive]);
+
   const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+  const isLayer = ENGINE_SECTIONS[engineActive].type === 'layer';
 
   return (
     <div className="home-page">
@@ -59,8 +129,9 @@ export default function Home() {
         <Link to="/" className="home-header-logo">kommercieel</Link>
         <nav className="home-header-nav">
           <a href="#services">Services</a>
+          <a href="#engine">Engine</a>
           <a href="#process">Process</a>
-          <a href="#proof">Results</a>
+          <Link to="/gtm-engineers">GTM Engineers</Link>
           <button className="theme-toggle" onClick={toggle} aria-label="Toggle theme">
             {theme === 'light' ? <MoonIcon /> : <SunIcon />}
           </button>
@@ -83,11 +154,312 @@ export default function Home() {
             <a href={CALENDLY} className="btn-primary" target="_blank" rel="noopener noreferrer">
               Book a Discovery Call <ArrowIcon />
             </a>
-            <Link to="/engine" className="btn-outline">See Our Work</Link>
+            <a href="#engine" className="btn-outline">See Our Engine</a>
           </div>
         </div>
         <div className="home-hero-gfx">
           <HeroGraphics />
+        </div>
+      </section>
+
+      {/* ── Engine Section ── */}
+      <section className="engine-section" id="engine" ref={engineWrapRef}>
+        <div className="engine-sticky">
+          <div className="engine-gear-side">
+            <div className="engine-gear-wrap">
+              <svg ref={gearSvgRef} className="engine-gear" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="eng-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="rgba(200,169,110,0.1)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </radialGradient>
+                </defs>
+                <circle cx="400" cy="400" r="390" fill="url(#eng-glow)" />
+
+                {/* Outer ticks */}
+                <g opacity="0.1" stroke="var(--eng-tick)" strokeWidth="1">
+                  {Array.from({ length: 24 }, (_, i) => {
+                    const angle = i * 15;
+                    const isMajor = angle % 60 === 0;
+                    const isMid = angle % 30 === 0 && !isMajor;
+                    const y1 = isMajor ? 22 : 28;
+                    const y2 = isMajor ? 44 : isMid ? 38 : 38;
+                    return (
+                      <g key={i} transform={`rotate(${angle},400,400)`}>
+                        <line x1="400" y1={y1} x2="400" y2={y2} />
+                      </g>
+                    );
+                  })}
+                </g>
+
+                {/* Orbit rings */}
+                <circle cx="400" cy="400" r="358" stroke="var(--eng-orbit)" strokeWidth="1" />
+                <circle cx="400" cy="400" r="298" stroke="var(--eng-orbit-mid)" strokeWidth="1" strokeDasharray="3 9" />
+                <circle cx="400" cy="400" r="244" stroke="var(--eng-orbit-strong)" strokeWidth="1" />
+                <circle cx="400" cy="400" r="188" stroke="rgba(200,169,110,0.08)" strokeWidth="1.5" />
+                <circle cx="400" cy="400" r="128" stroke="var(--eng-orbit-strong)" strokeWidth="1" />
+
+                {/* Gear body */}
+                <circle cx="400" cy="400" r="178" fill="rgba(200,169,110,0.025)" stroke="rgba(200,169,110,0.2)" strokeWidth="1.5" />
+
+                {/* TOOTH 0 — Asset Engine */}
+                <g id="home-tooth-0" style={{ transformOrigin: '400px 400px' }}>
+                  <rect x="376" y="186" width="48" height="36" rx="5" fill="rgba(200,169,110,0.35)" stroke="rgba(200,169,110,0.8)" strokeWidth="2" />
+                  <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.6)" />
+                  <rect x="384" y="206" width="20" height="3" rx="1.5" fill="rgba(200,169,110,0.3)" />
+                </g>
+
+                {/* TOOTH 1 — Data Layer */}
+                <g id="home-tooth-1" style={{ transformOrigin: '400px 400px' }} transform="rotate(60,400,400)">
+                  <polygon points="400,188 416,204 400,220 384,204" fill="rgba(122,184,164,0.15)" stroke="rgba(122,184,164,0.6)" strokeWidth="1.5" />
+                  <polygon points="400,196 408,204 400,212 392,204" fill="rgba(122,184,164,0.35)" />
+                  <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.7)" />
+                </g>
+
+                {/* TOOTH 2 — Signal Engine */}
+                <g id="home-tooth-2" style={{ transformOrigin: '400px 400px' }} transform="rotate(120,400,400)">
+                  <rect x="376" y="186" width="48" height="36" rx="5" fill="rgba(200,169,110,0.07)" stroke="rgba(200,169,110,0.2)" strokeWidth="1" />
+                  <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.2)" />
+                </g>
+
+                {/* TOOTH 3 — Enrichment Layer */}
+                <g id="home-tooth-3" style={{ transformOrigin: '400px 400px' }} transform="rotate(180,400,400)">
+                  <polygon points="400,188 416,204 400,220 384,204" fill="rgba(122,184,164,0.08)" stroke="rgba(122,184,164,0.35)" strokeWidth="1.5" />
+                  <polygon points="400,196 408,204 400,212 392,204" fill="rgba(122,184,164,0.2)" />
+                  <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.45)" />
+                </g>
+
+                {/* TOOTH 4 — Outbound Engine */}
+                <g id="home-tooth-4" style={{ transformOrigin: '400px 400px' }} transform="rotate(240,400,400)">
+                  <rect x="376" y="186" width="48" height="36" rx="5" fill="rgba(200,169,110,0.07)" stroke="rgba(200,169,110,0.2)" strokeWidth="1" />
+                  <rect x="384" y="198" width="32" height="4" rx="2" fill="rgba(200,169,110,0.2)" />
+                </g>
+
+                {/* TOOTH 5 — Feedback Layer */}
+                <g id="home-tooth-5" style={{ transformOrigin: '400px 400px' }} transform="rotate(300,400,400)">
+                  <polygon points="400,188 416,204 400,220 384,204" fill="rgba(122,184,164,0.08)" stroke="rgba(122,184,164,0.35)" strokeWidth="1.5" />
+                  <polygon points="400,196 408,204 400,212 392,204" fill="rgba(122,184,164,0.2)" />
+                  <circle cx="400" cy="204" r="3.5" fill="rgba(122,184,164,0.45)" />
+                </g>
+
+                {/* Spokes */}
+                <g stroke="rgba(200,169,110,0.09)" strokeWidth="1.5">
+                  {[0, 60, 120, 180, 240, 300].map(angle => (
+                    <g key={angle} transform={`rotate(${angle},400,400)`}>
+                      <line x1="400" y1="272" x2="400" y2="224" />
+                    </g>
+                  ))}
+                </g>
+
+                {/* Inner rings */}
+                <circle cx="400" cy="400" r="88" stroke="rgba(200,169,110,0.1)" strokeWidth="1" strokeDasharray="3 7" />
+                <circle cx="400" cy="400" r="58" fill="rgba(200,169,110,0.04)" stroke="rgba(200,169,110,0.16)" strokeWidth="1.5" />
+                <circle cx="400" cy="400" r="26" fill="rgba(200,169,110,0.12)" stroke="rgba(200,169,110,0.35)" strokeWidth="2" />
+                <circle cx="400" cy="400" r="9" fill="rgba(200,169,110,0.7)" />
+
+                {/* Center bolt */}
+                <line x1="400" y1="374" x2="400" y2="390" stroke="var(--eng-bolt)" strokeWidth="2.5" />
+                <line x1="400" y1="410" x2="400" y2="426" stroke="var(--eng-bolt)" strokeWidth="2.5" />
+                <line x1="374" y1="400" x2="390" y2="400" stroke="var(--eng-bolt)" strokeWidth="2.5" />
+                <line x1="410" y1="400" x2="426" y2="400" stroke="var(--eng-bolt)" strokeWidth="2.5" />
+
+                {/* Inner holes */}
+                <g fill="var(--eng-hole)" stroke="rgba(200,169,110,0.1)" strokeWidth="1">
+                  {[0, 60, 120, 180, 240, 300].map(angle => (
+                    <g key={angle} transform={`rotate(${angle},400,400)`}>
+                      <circle cx="400" cy="344" r="5" />
+                    </g>
+                  ))}
+                </g>
+
+                {/* Satellite gear top-right */}
+                <g transform="translate(575,172)" id="home-sat-1">
+                  <circle cx="0" cy="0" r="46" fill="rgba(200,169,110,0.02)" stroke="rgba(200,169,110,0.16)" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="18" fill="rgba(200,169,110,0.06)" stroke="rgba(200,169,110,0.16)" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="6" fill="rgba(200,169,110,0.26)" />
+                  <rect x="-6" y="-56" width="12" height="14" rx="2" fill="rgba(200,169,110,0.16)" />
+                  <rect x="-6" y="42" width="12" height="14" rx="2" fill="rgba(200,169,110,0.16)" />
+                  <rect x="-56" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.16)" />
+                  <rect x="42" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.16)" />
+                  <g transform="rotate(45)">
+                    <rect x="-6" y="-56" width="12" height="14" rx="2" fill="rgba(200,169,110,0.09)" />
+                    <rect x="-6" y="42" width="12" height="14" rx="2" fill="rgba(200,169,110,0.09)" />
+                    <rect x="-56" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.09)" />
+                    <rect x="42" y="-6" width="14" height="12" rx="2" fill="rgba(200,169,110,0.09)" />
+                  </g>
+                  <line x1="0" y1="-12" x2="0" y2="12" stroke="var(--eng-bolt)" strokeWidth="1.5" />
+                  <line x1="-12" y1="0" x2="12" y2="0" stroke="var(--eng-bolt)" strokeWidth="1.5" />
+                </g>
+
+                {/* Satellite gear bottom-left */}
+                <g transform="translate(198,598)" id="home-sat-2">
+                  <circle cx="0" cy="0" r="34" fill="rgba(200,169,110,0.02)" stroke="rgba(200,169,110,0.1)" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="13" fill="rgba(200,169,110,0.05)" stroke="rgba(200,169,110,0.1)" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="4" fill="rgba(200,169,110,0.2)" />
+                  <rect x="-5" y="-44" width="10" height="12" rx="2" fill="rgba(200,169,110,0.12)" />
+                  <rect x="-5" y="32" width="10" height="12" rx="2" fill="rgba(200,169,110,0.12)" />
+                  <rect x="-44" y="-5" width="12" height="10" rx="2" fill="rgba(200,169,110,0.12)" />
+                  <rect x="32" y="-5" width="12" height="10" rx="2" fill="rgba(200,169,110,0.12)" />
+                </g>
+
+                {/* Dashed connectors */}
+                <line x1="548" y1="215" x2="523" y2="225" stroke="var(--eng-orbit-strong)" strokeWidth="1" strokeDasharray="3 7" />
+                <line x1="228" y1="564" x2="242" y2="548" stroke="var(--eng-orbit-strong)" strokeWidth="1" strokeDasharray="3 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div className={`engine-content-side${isLayer ? ' teal' : ''}`}>
+            <div className="engine-panels">
+              {/* 0: Asset Engine */}
+              <div className={`engine-panel${engineActive === 0 ? ' active' : ''}`}>
+                <div className="ep-num">01</div>
+                <div className="ep-tag">Engine</div>
+                <h2 className="ep-title">Prospects find <em>you</em> first</h2>
+                <p className="ep-desc">Content and lead magnets that pull your ICP in — before you ever send a cold email. Your best outbound starts with inbound.</p>
+                <ul className="ep-items">
+                  <li>LinkedIn content built around real proof points</li>
+                  <li>Gated playbooks that attract ICP-matched founders</li>
+                  <li>Community as an always-on trust engine</li>
+                  <li>Diagnostic offer as lowest-friction entry point</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat">
+                    <span className="ep-stat-num">34%</span>
+                    <span className="ep-stat-label">Reply rate on asset-led outbound</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+
+              {/* 1: Data Layer */}
+              <div className={`engine-panel is-layer${engineActive === 1 ? ' active' : ''}`}>
+                <div className="ep-layer-tag">Connection Layer</div>
+                <div className="ep-bridge">
+                  <div className="ep-bridge-node">Asset Engine</div>
+                  <div className="ep-bridge-line" data-label="feeds into" />
+                  <div className="ep-bridge-node">Signal Engine</div>
+                </div>
+                <h2 className="ep-layer-title">Clean data,<br /><em>zero guesswork</em></h2>
+                <p className="ep-layer-desc">The foundation connecting what you publish to who you target. Every lead is sourced, verified, and scored before anyone touches it.</p>
+                <ul className="ep-layer-items">
+                  <li>LinkedIn Sales Nav for real-time prospect sourcing</li>
+                  <li>Waterfall enrichment across 12+ data providers</li>
+                  <li>Verified emails, direct dials, tech stack, funding data</li>
+                  <li>Refreshed weekly — no stale lists, no bounced emails</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat layer">
+                    <span className="ep-stat-num">40+</span>
+                    <span className="ep-stat-label">Data points per prospect</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+
+              {/* 2: Signal Engine */}
+              <div className={`engine-panel${engineActive === 2 ? ' active' : ''}`}>
+                <div className="ep-num">02</div>
+                <div className="ep-tag">Engine</div>
+                <h2 className="ep-title">Know who's ready <em>this week</em></h2>
+                <p className="ep-desc">Intent signals that surface buyers actively researching your category — so you reach them at the right moment, not on an arbitrary cadence.</p>
+                <ul className="ep-items">
+                  <li>Competitor content engagers (likers, commenters)</li>
+                  <li>Hiring signals: GTM, SDR, and sales roles</li>
+                  <li>Tech stack adoption signals (Clay, Instantly, Apollo)</li>
+                  <li>ICP filter: B2B SaaS founders, Seed to Series B</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat">
+                    <span className="ep-stat-num">3x</span>
+                    <span className="ep-stat-label">Higher conversion vs cold lists</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+
+              {/* 3: Enrichment Layer */}
+              <div className={`engine-panel is-layer${engineActive === 3 ? ' active' : ''}`}>
+                <div className="ep-layer-tag">Connection Layer</div>
+                <div className="ep-bridge">
+                  <div className="ep-bridge-node">Signal Engine</div>
+                  <div className="ep-bridge-line" data-label="enriches" />
+                  <div className="ep-bridge-node">Outbound Engine</div>
+                </div>
+                <h2 className="ep-layer-title">Every message<br /><em>feels personal</em></h2>
+                <p className="ep-layer-desc">Turns raw signals into personalized context. Every contact gets scored, enriched, and loaded with personalization tokens before a single sequence fires.</p>
+                <ul className="ep-layer-items">
+                  <li>Automated enrichment via Bitscale + Clay waterfall</li>
+                  <li>Role, tech stack, and growth stage per prospect</li>
+                  <li>ICP scoring so your SDR talks to buyers, not tourists</li>
+                  <li>Auto-personalization tokens for every sequence</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat layer">
+                    <span className="ep-stat-num">20h</span>
+                    <span className="ep-stat-label">Saved per week on SDR research</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+
+              {/* 4: Outbound Engine */}
+              <div className={`engine-panel${engineActive === 4 ? ' active' : ''}`}>
+                <div className="ep-num">03</div>
+                <div className="ep-tag">Engine</div>
+                <h2 className="ep-title">Meetings that <em>book themselves</em></h2>
+                <p className="ep-desc">Multi-channel sequences triggered by intent, not arbitrary cadence. Email + LinkedIn working together so your calendar fills while you build product.</p>
+                <ul className="ep-items">
+                  <li>Cold email sequences scored by live signal data</li>
+                  <li>LinkedIn DM flows tied to content engagement</li>
+                  <li>Personalized value props per ICP segment</li>
+                  <li>Pipeline automation: replies route straight to your CRM</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat">
+                    <span className="ep-stat-num">460</span>
+                    <span className="ep-stat-label">Replies from 2,600 leads</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+
+              {/* 5: Feedback Layer */}
+              <div className={`engine-panel is-layer${engineActive === 5 ? ' active' : ''}`}>
+                <div className="ep-layer-tag">Connection Layer</div>
+                <div className="ep-bridge">
+                  <div className="ep-bridge-node">Outbound Engine</div>
+                  <div className="ep-bridge-line" data-label="compounds into" />
+                  <div className="ep-bridge-node">Asset Engine</div>
+                </div>
+                <h2 className="ep-layer-title">Gets smarter<br /><em>every cycle</em></h2>
+                <p className="ep-layer-desc">The loop that closes the flywheel. Every reply, every booking, every close feeds back into targeting and content — so month 6 outperforms month 1 by default.</p>
+                <ul className="ep-layer-items">
+                  <li>Reply rates and meeting data tracked per sequence</li>
+                  <li>Winning messages recycled into new content assets</li>
+                  <li>ICP definition sharpened every 30 days from real data</li>
+                  <li>Compounding returns: same spend, better results each month</li>
+                </ul>
+                <div className="ep-bottom">
+                  <div className="ep-stat layer">
+                    <span className="ep-stat-num">&infin;</span>
+                    <span className="ep-stat-label">Compounding loop</span>
+                  </div>
+                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Counter dots */}
+          <div className="engine-counter">
+            <div className="engine-counter-dots">
+              {ENGINE_SECTIONS.map((s, i) => (
+                <div key={i} className={`engine-dot ${s.type}-dot${i === engineActive ? ' active' : ''}`} />
+              ))}
+            </div>
+            <span className={`engine-counter-label${isLayer ? ' teal' : ''}`}>{ENGINE_SECTIONS[engineActive].name}</span>
+          </div>
         </div>
       </section>
 
@@ -230,7 +602,7 @@ export default function Home() {
             <a href={CALENDLY} className="btn-primary" target="_blank" rel="noopener noreferrer">
               Book a Discovery Call <ArrowIcon />
             </a>
-            <Link to="/engine" className="btn-outline">View Case Studies</Link>
+            <a href="#engine" className="btn-outline">View Our Engine</a>
           </div>
         </div>
       </section>
@@ -255,7 +627,7 @@ export default function Home() {
             <span className="home-footer-col-title">Company</span>
             <a href="#proof">About</a>
             <a href="#proof">Case Studies</a>
-            <Link to="/engine">Engine</Link>
+            <a href="#engine">Engine</a>
             <Link to="/gtm-engineers">Careers</Link>
           </div>
           <div className="home-footer-col">
@@ -266,7 +638,7 @@ export default function Home() {
           </div>
         </div>
         <div className="home-footer-bottom">
-          <span className="home-footer-copy">© 2026 Kommercieel. All rights reserved.</span>
+          <span className="home-footer-copy">&copy; 2026 Kommercieel. All rights reserved.</span>
           <a href="mailto:info@kommercieel.com" className="home-footer-email">info@kommercieel.com</a>
         </div>
       </footer>
@@ -294,25 +666,19 @@ function Testimonial({ quote, name, role, initials, alt }: {
 function HeroGraphics() {
   return (
     <svg width="100%" height="100%" viewBox="0 0 660 600" fill="none">
-      {/* Orbit rings */}
       <ellipse cx="330" cy="290" rx="240" ry="240" stroke="var(--home-orbit-stroke)" strokeWidth="1" transform="rotate(15 330 290)" />
       <ellipse cx="330" cy="290" rx="200" ry="200" stroke="var(--home-orbit-stroke)" strokeWidth="1" transform="rotate(-10 330 290)" />
       <ellipse cx="330" cy="290" rx="140" ry="140" stroke="var(--home-orbit-stroke)" strokeWidth="1.5" transform="rotate(25 330 290)" />
-      {/* Center dot */}
       <circle cx="320" cy="290" r="25" fill="var(--home-orbit-dot)" />
-      {/* Orbit dots */}
       <circle cx="548" cy="278" r="8" fill="var(--home-orbit-dot)" />
       <circle cx="308" cy="56" r="6" fill="var(--home-text-muted)" />
       <circle cx="138" cy="406" r="5" fill="var(--home-accent-sub)" />
       <circle cx="468" cy="478" r="7" fill="var(--home-accent-sub)" />
-      {/* Float rectangles */}
       <rect x="540" y="150" width="60" height="60" rx="2" transform="rotate(45 570 180)" stroke="var(--home-orbit-stroke)" strokeWidth="1" fill="var(--home-bg2)" />
       <rect x="48" y="208" width="36" height="36" rx="2" transform="rotate(15 66 226)" fill="var(--home-orbit-dot)" />
       <rect x="408" y="36" width="28" height="28" rx="2" transform="rotate(-20 422 50)" stroke="var(--home-orbit-dot)" strokeWidth="1.5" fill="none" />
-      {/* Dash lines */}
       <line x1="108" y1="128" x2="204" y2="178" stroke="var(--home-accent-sub)" strokeWidth="1" strokeDasharray="4 4" />
       <line x1="428" y1="388" x2="508" y2="358" stroke="var(--home-accent-sub)" strokeWidth="1" strokeDasharray="4 4" />
-      {/* Float Card 1 */}
       <g>
         <rect x="438" y="148" width="180" height="108" rx="12" fill="var(--home-bg)" stroke="var(--home-orbit-stroke)" strokeWidth="1" />
         <text x="454" y="174" fill="var(--home-text-dim)" fontSize="11" fontFamily="Inter" fontWeight="500">Pipeline Value</text>
@@ -320,13 +686,11 @@ function HeroGraphics() {
         <circle cx="454" cy="232" r="4" fill="var(--home-accent-teal)" />
         <text x="464" y="236" fill="var(--home-accent-teal)" fontSize="11" fontFamily="Inter" fontWeight="500">+32% this month</text>
       </g>
-      {/* Float Card 2 */}
       <g>
         <rect x="28" y="348" width="160" height="88" rx="12" fill="var(--home-accent)" />
         <text x="42" y="374" fill="var(--home-accent-sub)" fontSize="11" fontFamily="Inter" fontWeight="500">Meetings Booked</text>
         <text x="42" y="410" fill="var(--home-bg)" fontSize="32" fontFamily="Outfit" fontWeight="900" letterSpacing="-1">147</text>
       </g>
-      {/* Float Card 3 */}
       <g>
         <rect x="348" y="428" width="200" height="36" rx="18" fill="var(--home-bg)" stroke="var(--home-orbit-stroke)" strokeWidth="1" />
         <circle cx="366" cy="446" r="4" fill="var(--home-accent-teal)" />

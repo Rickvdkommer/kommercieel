@@ -1,0 +1,270 @@
+[
+  {
+    "id": "todo-1",
+    "dealId": "deal-1",
+    "title": "Send Notion campaign overview link to Paul via Slack/GChat",
+    "description": "Share the Notion campaign overview document with Paul through Slack or Google Chat so he can review the campaign strategy.",
+    "category": "immediate",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:01:25.643Z",
+    "completedAt": "2026-03-10T05:01:25.643Z"
+  },
+  {
+    "id": "todo-2",
+    "dealId": "deal-1",
+    "title": "Set up Google Ads — launch Monday, $30/day, use promo credit before March 22nd",
+    "description": "Configure and launch Google Ads campaign with $30/day budget. Must use promo credit before it expires on March 22nd. Target launch: Monday.",
+    "category": "immediate",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T04:32:33.834Z"
+  },
+  {
+    "id": "todo-3",
+    "dealId": "deal-1",
+    "title": "Forward Google Ads promo email to Paul",
+    "description": "Forward the Google Ads promotional credit email to Paul so he's aware of the promo details and expiration.",
+    "category": "immediate",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:01:37.059Z",
+    "completedAt": "2026-03-10T05:01:37.059Z"
+  },
+  {
+    "id": "todo-4",
+    "dealId": "deal-1",
+    "title": "Build target brand list (~30 accounts)",
+    "description": "Research and compile a list of approximately 30 target brand accounts for outbound outreach.",
+    "category": "immediate",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:01:38.984Z",
+    "completedAt": "2026-03-10T05:01:38.984Z"
+  },
+  {
+    "id": "todo-5",
+    "dealId": "deal-1",
+    "title": "Install Meta pixel on EH website",
+    "description": "Install the Meta (Facebook) tracking pixel on the Element Human website for ad tracking and retargeting capabilities.",
+    "category": "immediate",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-6",
+    "dealId": "deal-1",
+    "title": "Draft 5 LinkedIn thought leadership posts for Matt",
+    "description": "Write 5 LinkedIn posts for Matt positioned as thought leadership content to build authority and engagement.",
+    "category": "immediate",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-7",
+    "dealId": "deal-1",
+    "title": "Work with Hamish on 90-second STS video demo",
+    "description": "Collaborate with Hamish to produce a 90-second video demo of the STS product for Amazon.",
+    "category": "amazon-sts",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-8",
+    "dealId": "deal-1",
+    "title": "Create STS FAQ document — format for Amazon internal wiki",
+    "description": "Draft a comprehensive FAQ document for the STS product, formatted specifically for Amazon's internal wiki standards.",
+    "category": "amazon-sts",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-9",
+    "dealId": "deal-1",
+    "title": "Continue on STS 2-pager",
+    "description": "Continue developing the STS two-page summary document for Amazon stakeholders.",
+    "category": "amazon-sts",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-10",
+    "dealId": "deal-1",
+    "title": "Analyze Amazon Monday call transcript — extract feedback for STS collateral",
+    "description": "Review and analyze the transcript from the Monday call with Amazon. Extract key feedback points to improve STS marketing collateral.",
+    "category": "amazon-sts",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:01:50.959Z",
+    "completedAt": "2026-03-10T05:01:50.959Z"
+  },
+  {
+    "id": "todo-11",
+    "dealId": "deal-1",
+    "title": "Set up LinkedIn intent signal tracking + automated outbound sequences",
+    "description": "Configure LinkedIn intent signal monitoring and set up automated outbound email/message sequences triggered by intent signals.",
+    "category": "phase-2",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-12",
+    "dealId": "deal-1",
+    "title": "Lead magnet creation — LinkedIn ads + vertical-specific ABM versions",
+    "description": "Create lead magnet content for LinkedIn ad campaigns with account-based marketing variations tailored to specific verticals.",
+    "category": "phase-2",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-13",
+    "dealId": "deal-1",
+    "title": "Meta retargeting ads for website visitors",
+    "description": "Set up Meta retargeting ad campaigns to re-engage Element Human website visitors.",
+    "category": "phase-2",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-14",
+    "dealId": "deal-1",
+    "title": "Digital sales rooms per target account",
+    "description": "Create personalized digital sales rooms for each target account with tailored content and resources.",
+    "category": "phase-2",
+    "status": "pending",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "id": "todo-15",
+    "dealId": "deal-1",
+    "title": "Weekly report cadence: Mondays (not Fridays)",
+    "description": "Note: weekly reports should be sent on Mondays, not Fridays as previously discussed.",
+    "category": "misc",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:02:00.084Z",
+    "completedAt": "2026-03-10T05:02:00.084Z"
+  },
+  {
+    "id": "todo-16",
+    "dealId": "deal-1",
+    "title": "Add Paramount/ByteDance to target list",
+    "description": "Include Paramount and ByteDance in the target brand/account list for outbound outreach.",
+    "category": "misc",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:03:14.485Z",
+    "completedAt": "2026-03-10T05:03:14.485Z"
+  },
+  {
+    "id": "todo-17",
+    "dealId": "deal-1",
+    "title": "Matt doesn't want to sell to smaller agencies — filter on lead form",
+    "description": "Add filtering on the lead form to exclude smaller agencies. Matt wants to focus on larger accounts only.",
+    "category": "misc",
+    "status": "done",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "updatedAt": "2026-03-10T05:03:04.410Z",
+    "completedAt": "2026-03-10T05:03:04.410Z"
+  },
+  {
+    "id": "todo-18",
+    "dealId": "deal-1",
+    "title": "Reshape marketing bet/plan — focus on 10 premium brands, argue for 30",
+    "category": "immediate",
+    "description": "Adapt the marketing plan based on Paul call: focus specifically on 10 premium media owner brands (Netflix, Disney+, Paramount/Warner Bros/HBO, etc.). Make the argument for targeting 30 to overcompensate. Submit as a bet request into the triage system.",
+    "status": "done",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T16:41:37.666Z",
+    "completedAt": "2026-03-10T16:41:37.666Z"
+  },
+  {
+    "id": "todo-19",
+    "dealId": "deal-1",
+    "title": "Research target brands' annual reports/10-Ks — extract top 5 initiatives per brand",
+    "category": "immediate",
+    "description": "All target brands are public companies. Go through their annual reports/10-Ks, use AI to extract top 5 strategic initiatives that align to EH's offering. Use this to tailor messaging per brand.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-11T16:39:38.730Z"
+  },
+  {
+    "id": "todo-20",
+    "dealId": "deal-1",
+    "title": "Add competitor keywords to Google Ads — Kantar, Nielsen",
+    "category": "immediate",
+    "description": "Paul flagged: make sure Kantar and Nielsen are included as competitor keywords in Google Ads campaigns. Brand lift keywords will be expensive since every competitor bids on them.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-11T16:39:43.691Z"
+  },
+  {
+    "id": "todo-21",
+    "dealId": "deal-1",
+    "title": "Launch Google Ads ASAP — use $500 promo credit before expiry",
+    "category": "immediate",
+    "description": "Get the bet request submitted so Google Ads can go live. Two campaigns ready: 1) retargeting (90-day visitors, broad keywords), 2) prospecting (SKWS, link click tracking). Budget: $25-50/day per campaign. Promo credit needs to be used soon.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "id": "todo-22",
+    "dealId": "deal-1",
+    "title": "Update EH website copy — align messaging to premium brand / niche ICP focus",
+    "category": "immediate",
+    "description": "Paul concern: if we drive traffic to the website, the current messaging doesn't reflect the hyper-niche focus on premium media owners and top 10 brands. Update homepage copy. Also plan landing pages for ad campaigns.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "id": "todo-23",
+    "dealId": "deal-1",
+    "title": "Create ad landing pages for Google Ads campaigns",
+    "category": "phase-2",
+    "description": "Build dedicated landing pages to drive Google Ads traffic to (instead of just the main website). Needs aligned messaging for the niche ICP. Can run in parallel with launching ads.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "id": "todo-24",
+    "dealId": "deal-1",
+    "title": "Sync with Hamish — create 45-90 sec STS video demo for Amazon",
+    "category": "amazon-sts",
+    "description": "Post in group chat, schedule call with Hamish (Paul optional). Create a snackable 45-90 sec video walkthrough for Amazon account managers. Must include: heat map visuals (attention graph), sponsorship + FITO + pause ad formats, respondent survey experience. Audience: Amazon AMs selling to their clients.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "id": "todo-25",
+    "dealId": "deal-1",
+    "title": "Update STS 2-pager — add FITO, pause ads, pre-approved pricing details",
+    "category": "amazon-sts",
+    "description": "Paul's feedback on the 2-pager: Page 1 should lead with Prime Video environment (no other partner tests ads in PV). Show attention across ads + sponsored content. Page 2: include FITO (First Impression Takeover), pause ads, pre-roll run of site formats. Highlight pre-approved pricing: test up to 3 creatives, 1 free report. Include sample report link and survey link.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "id": "todo-26",
+    "dealId": "deal-1",
+    "title": "Add Paramount/Warner Bros/HBO to brand target list as priority",
+    "category": "misc",
+    "description": "Paul flagged Paramount + Warner Bros/HBO as key premium media owners to target. They align with Matt's focus on premium inventory only.",
+    "status": "pending",
+    "createdAt": "2026-03-10T00:00:00.000Z",
+    "updatedAt": "2026-03-10T00:00:00.000Z"
+  }
+]
