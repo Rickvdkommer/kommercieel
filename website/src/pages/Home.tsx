@@ -128,9 +128,9 @@ export default function Home() {
       <header className="home-header">
         <Link to="/" className="home-header-logo">kommercieel</Link>
         <nav className="home-header-nav">
-          <a href="#services">Services</a>
           <a href="#engine">Engine</a>
-          <a href="#process">Process</a>
+          <a href="#services">Services</a>
+          <a href="#why">Why Us</a>
           <Link to="/gtm-engineers">GTM Engineers</Link>
           <button className="theme-toggle" onClick={toggle} aria-label="Toggle theme">
             {theme === 'light' ? <MoonIcon /> : <SunIcon />}
@@ -144,17 +144,17 @@ export default function Home() {
       {/* ── Hero ── */}
       <section className="home-hero">
         <div className="home-hero-content">
-          <span className="home-hero-badge">GTM ENGINE BUILDERS</span>
-          <h1>We build the systems<br />that fill your pipeline.</h1>
+          <span className="home-hero-badge">FOR B2B SAAS FOUNDERS</span>
+          <h1>Stop doing outbound<br />from a spreadsheet.</h1>
           <p className="home-hero-sub">
-            Outbound infrastructure, data enrichment, and pipeline automation
-            for B2B SaaS companies that want predictable growth.
+            We build and run your entire outbound engine — data enrichment, multi-channel sequences,
+            and pipeline automation — so you can focus on closing deals and building product.
           </p>
           <div className="home-hero-ctas">
             <a href={CALENDLY} className="btn-primary" target="_blank" rel="noopener noreferrer">
               Book a Discovery Call <ArrowIcon />
             </a>
-            <a href="#engine" className="btn-outline">See Our Engine</a>
+            <a href="#engine" className="btn-outline">See How It Works</a>
           </div>
         </div>
         <div className="home-hero-gfx">
@@ -325,8 +325,8 @@ export default function Home() {
                 </ul>
                 <div className="ep-bottom">
                   <div className="ep-stat">
-                    <span className="ep-stat-num">34%</span>
-                    <span className="ep-stat-label">Reply rate on asset-led outbound</span>
+                    <span className="ep-stat-num">5</span>
+                    <span className="ep-stat-label">Content pillars per engine</span>
                   </div>
                   <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
@@ -370,8 +370,8 @@ export default function Home() {
                 </ul>
                 <div className="ep-bottom">
                   <div className="ep-stat">
-                    <span className="ep-stat-num">3x</span>
-                    <span className="ep-stat-label">Higher conversion vs cold lists</span>
+                    <span className="ep-stat-num">8+</span>
+                    <span className="ep-stat-label">Signal sources per prospect</span>
                   </div>
                   <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
@@ -395,8 +395,8 @@ export default function Home() {
                 </ul>
                 <div className="ep-bottom">
                   <div className="ep-stat layer">
-                    <span className="ep-stat-num">20h</span>
-                    <span className="ep-stat-label">Saved per week on SDR research</span>
+                    <span className="ep-stat-num">12+</span>
+                    <span className="ep-stat-label">Enrichment providers in the waterfall</span>
                   </div>
                   <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
@@ -416,8 +416,8 @@ export default function Home() {
                 </ul>
                 <div className="ep-bottom">
                   <div className="ep-stat">
-                    <span className="ep-stat-num">460</span>
-                    <span className="ep-stat-label">Replies from 2,600 leads</span>
+                    <span className="ep-stat-num">34%</span>
+                    <span className="ep-stat-label">Reply rate on first campaign</span>
                   </div>
                   <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
@@ -473,10 +473,10 @@ export default function Home() {
       {/* ── Metrics ── */}
       <section className="home-metrics">
         {[
-          { val: '50+', label: 'B2B Clients' },
-          { val: '3.2x', label: 'Avg Pipeline Growth' },
-          { val: '$12M+', label: 'Pipeline Generated' },
-          { val: '240%', label: 'Reply Rate Increase' },
+          { val: '6', label: 'Engine Components' },
+          { val: '40+', label: 'Data Providers' },
+          { val: '< 4 wks', label: 'To First Sequences' },
+          { val: '12+', label: 'Tools Integrated' },
         ].flatMap((m, i) => [
           <div key={`m${i}`} className="home-metric">
             <span className="home-metric-val">{m.val}</span>
@@ -490,8 +490,8 @@ export default function Home() {
       <section className="home-services" id="services">
         <div className="home-services-header">
           <span className="home-section-label">WHAT WE BUILD FOR YOU</span>
-          <h2 className="home-section-h2">Three pillars of<br />predictable growth.</h2>
-          <p className="home-section-desc">We design, build, and run the entire system — so your team focuses on closing deals.</p>
+          <h2 className="home-section-h2">Three pillars of your<br />outbound engine.</h2>
+          <p className="home-section-desc">Everything a founder needs to go from manual outbound to automated pipeline — without hiring an SDR team.</p>
         </div>
         <div className="home-services-grid">
           <div className="home-service-card">
@@ -522,14 +522,14 @@ export default function Home() {
       <section className="home-how" id="process">
         <div className="home-how-header">
           <span className="home-section-label">HOW IT WORKS</span>
-          <h2 className="home-section-h2">From zero to pipeline<br />in 4 weeks.</h2>
+          <h2 className="home-section-h2">From founder-led outbound<br />to an engine that runs itself.</h2>
         </div>
         <div className="home-steps">
           {[
-            { num: '01', title: 'Audit & Strategy', desc: 'Deep dive into your ICP, existing processes, and tech stack to map the ideal GTM engine.' },
-            { num: '02', title: 'Build & Integrate', desc: 'Set up data enrichment, sequencing tools, and CRM integrations tailored to your workflow.' },
-            { num: '03', title: 'Launch & Optimize', desc: 'Go live with full sequences. We monitor, A/B test, and optimize for maximum pipeline.' },
-            { num: '04', title: 'Scale & Expand', desc: 'Once proven, we expand to new verticals, channels, and territories. Compounding growth.' },
+            { num: '01', title: 'Audit & Strategy', desc: "We map your ICP, audit what you've tried, and design the engine architecture. You stay focused on product." },
+            { num: '02', title: 'Build & Integrate', desc: "We set up data enrichment, sequencing, and CRM integrations on your accounts — everything you'll own." },
+            { num: '03', title: 'Launch & Optimize', desc: 'First sequences go live. We monitor deliverability, A/B test messaging, and optimize reply rates weekly.' },
+            { num: '04', title: 'Scale & Compound', desc: 'Winning signals feed back into targeting. Each month performs better than the last — without more spend.' },
           ].flatMap((step, i) => [
             <div key={`step${i}`} className="home-step">
               <span className="home-step-num">{step.num}</span>
@@ -541,47 +541,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Social Proof ── */}
-      <section className="home-proof" id="proof">
-        <div className="home-proof-header">
-          <div className="home-proof-left">
-            <span className="home-section-label">SOCIAL PROOF</span>
-            <h2 className="home-section-h2">Trusted by revenue teams<br />across B2B SaaS.</h2>
-          </div>
-          <p className="home-proof-right">
-            We've helped 50+ companies build predictable pipelines. Here's what they say.
+      {/* ── Why Kommercieel ── */}
+      <section className="home-why" id="why">
+        <div className="home-why-header">
+          <span className="home-section-label">WHY KOMMERCIEEL</span>
+          <h2 className="home-section-h2">Built for founders<br />who'd rather ship product.</h2>
+          <p className="home-section-desc">
+            You didn't raise a round to spend your days writing cold emails. We build the GTM engine so you don't have to.
           </p>
         </div>
-        <div className="home-testimonials">
-          <div className="home-testimonials-col">
-            <Testimonial
-              quote='"Kommercieel transformed our outbound. We went from 2 meetings/week to 15 in just 6 weeks."'
-              name="Sarah Johnson"
-              role="VP Sales, TechCorp"
-              initials="SJ"
-            />
-            <Testimonial
-              quote='"The data enrichment alone saved us 20 hours per week. Our SDR team finally focuses on selling, not researching."'
-              name="Mark Rivera"
-              role="Head of Growth, ScaleUp"
-              initials="MR"
-              alt
-            />
+        <div className="home-why-grid">
+          <div className="home-why-card">
+            <span className="home-why-num">01</span>
+            <h3 className="home-why-title">You own the system</h3>
+            <p className="home-why-desc">No lock-in. Every workflow, template, and data source we build runs on your accounts. If we part ways, the engine stays with you.</p>
           </div>
-          <div className="home-testimonials-col">
-            <Testimonial
-              quote='"Finally, an agency that actually understands B2B outbound. Not just tools, but real strategy."'
-              name="Anna Kim"
-              role="CEO, DataFlow"
-              initials="AK"
-              alt
-            />
-            <Testimonial
-              quote='"Our reply rate went from 2% to 9% in the first month. The ROI was immediate and undeniable."'
-              name="David Lee"
-              role="CRO, RevStack"
-              initials="DL"
-            />
+          <div className="home-why-card">
+            <span className="home-why-num">02</span>
+            <h3 className="home-why-title">Engineering, not services</h3>
+            <p className="home-why-desc">We don't hire junior SDRs to blast generic emails. We engineer automated systems — data enrichment, intent signals, and multi-channel sequences that run without manual effort.</p>
+          </div>
+          <div className="home-why-card">
+            <span className="home-why-num">03</span>
+            <h3 className="home-why-title">Built for early-stage SaaS</h3>
+            <p className="home-why-desc">We work exclusively with Seed to Series A founders. Our playbooks are designed for teams without a sales org — not enterprise revenue teams with 50 SDRs.</p>
+          </div>
+          <div className="home-why-card">
+            <span className="home-why-num">04</span>
+            <h3 className="home-why-title">Live in 4 weeks</h3>
+            <p className="home-why-desc">No 90-day onboarding. We audit your ICP, build the infrastructure, and launch your first sequences within 4 weeks. You'll have pipeline before most agencies finish their deck.</p>
           </div>
         </div>
       </section>
@@ -591,17 +579,17 @@ export default function Home() {
         <div className="home-cta-orbit" style={{ width: 300, height: 300, top: -80, left: -80 }} />
         <div className="home-cta-orbit" style={{ width: 400, height: 400, bottom: -50, right: -100 }} />
         <div className="home-cta-content">
-          <span className="home-section-label">READY TO GROW?</span>
+          <span className="home-section-label">STOP DOING OUTBOUND YOURSELF</span>
           <h2 className="home-section-h2">Let's build your<br />GTM engine.</h2>
           <p className="home-section-desc">
-            Book a 15-minute discovery call. No commitment, no pitch deck.<br />
-            Just an honest conversation about your pipeline.
+            15-minute call. We'll map your ICP, audit your current outbound,<br />
+            and show you exactly what we'd build. No commitment.
           </p>
           <div className="home-cta-btns">
             <a href={CALENDLY} className="btn-primary" target="_blank" rel="noopener noreferrer">
               Book a Discovery Call <ArrowIcon />
             </a>
-            <a href="#engine" className="btn-outline">View Our Engine</a>
+            <a href="#engine" className="btn-outline">See the Engine</a>
           </div>
         </div>
       </section>
@@ -612,7 +600,7 @@ export default function Home() {
           <div className="home-footer-brand">
             <span className="home-footer-logo">kommercieel</span>
             <p className="home-footer-tagline">
-              Building GTM engines for B2B SaaS companies that want predictable, scalable growth.
+              We build outbound engines for early-stage B2B SaaS founders who'd rather ship product than send cold emails.
             </p>
           </div>
           <div className="home-footer-col">
@@ -624,10 +612,10 @@ export default function Home() {
           </div>
           <div className="home-footer-col">
             <span className="home-footer-col-title">Company</span>
-            <a href="#proof">About</a>
-            <a href="#proof">Case Studies</a>
+            <a href="#why">Why Kommercieel</a>
             <a href="#engine">Engine</a>
-            <Link to="/gtm-engineers">Careers</Link>
+            <a href="#process">Process</a>
+            <Link to="/gtm-engineers">GTM Engineers</Link>
           </div>
           <div className="home-footer-col">
             <span className="home-footer-col-title">Legal</span>
@@ -641,23 +629,6 @@ export default function Home() {
           <a href="mailto:info@kommercieel.com" className="home-footer-email">info@kommercieel.com</a>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function Testimonial({ quote, name, role, initials, alt }: {
-  quote: string; name: string; role: string; initials: string; alt?: boolean;
-}) {
-  return (
-    <div className={`home-testimonial${alt ? ' alt' : ''}`}>
-      <p className="home-testimonial-quote">{quote}</p>
-      <div className="home-testimonial-author">
-        <div className="home-testimonial-avatar">{initials}</div>
-        <div>
-          <div className="home-testimonial-name">{name}</div>
-          <div className="home-testimonial-role">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -680,20 +651,20 @@ function HeroGraphics() {
       <line x1="428" y1="388" x2="508" y2="358" stroke="var(--home-accent-sub)" strokeWidth="1" strokeDasharray="4 4" />
       <g>
         <rect x="438" y="148" width="180" height="108" rx="12" fill="var(--home-bg)" stroke="var(--home-orbit-stroke)" strokeWidth="1" />
-        <text x="454" y="174" fill="var(--home-text-dim)" fontSize="11" fontFamily="Inter" fontWeight="500">Pipeline Value</text>
-        <text x="454" y="206" fill="var(--home-text)" fontSize="28" fontFamily="Outfit" fontWeight="900" letterSpacing="-1">$2.4M</text>
+        <text x="454" y="174" fill="var(--home-text-dim)" fontSize="11" fontFamily="Inter" fontWeight="500">Signal Engine</text>
+        <text x="454" y="206" fill="var(--home-text)" fontSize="22" fontFamily="Outfit" fontWeight="700" letterSpacing="-0.5">Intent Detected</text>
         <circle cx="454" cy="232" r="4" fill="var(--home-accent-teal)" />
-        <text x="464" y="236" fill="var(--home-accent-teal)" fontSize="11" fontFamily="Inter" fontWeight="500">+32% this month</text>
+        <text x="464" y="236" fill="var(--home-accent-teal)" fontSize="11" fontFamily="Inter" fontWeight="500">ICP match confirmed</text>
       </g>
       <g>
         <rect x="28" y="348" width="160" height="88" rx="12" fill="var(--home-accent)" />
-        <text x="42" y="374" fill="var(--home-accent-sub)" fontSize="11" fontFamily="Inter" fontWeight="500">Meetings Booked</text>
-        <text x="42" y="410" fill="var(--home-bg)" fontSize="32" fontFamily="Outfit" fontWeight="900" letterSpacing="-1">147</text>
+        <text x="42" y="374" fill="var(--home-accent-sub)" fontSize="11" fontFamily="Inter" fontWeight="500">Outbound Engine</text>
+        <text x="42" y="406" fill="var(--home-bg)" fontSize="14" fontFamily="Outfit" fontWeight="700">Sequence live</text>
       </g>
       <g>
         <rect x="348" y="428" width="200" height="36" rx="18" fill="var(--home-bg)" stroke="var(--home-orbit-stroke)" strokeWidth="1" />
         <circle cx="366" cy="446" r="4" fill="var(--home-accent-teal)" />
-        <text x="378" y="450" fill="var(--home-text-muted)" fontSize="12" fontFamily="Inter" fontWeight="500">Syncing 12 data sources</text>
+        <text x="378" y="450" fill="var(--home-text-muted)" fontSize="12" fontFamily="Inter" fontWeight="500">Enriching across 40+ sources</text>
       </g>
     </svg>
   );
