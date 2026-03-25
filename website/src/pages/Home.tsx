@@ -13,7 +13,7 @@ const ENGINE_SECTIONS = [
   { name: 'Feedback Layer', type: 'layer' },
 ] as const;
 
-const PHASE_LABELS = ['Awareness', 'Discovery', 'Intent', 'Qualification', 'Engagement', 'Optimization'];
+const PHASE_LABELS = ['Awareness', 'Discovery', 'Intent', 'Enrichment', 'Engagement', 'Optimization'];
 
 function SunIcon() {
   return (
