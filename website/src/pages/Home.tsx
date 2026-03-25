@@ -86,7 +86,8 @@ export default function Home() {
       if (sat1) sat1.style.transform = `rotate(${progress * 360 * 1.6}deg)`;
       if (sat2) sat2.style.transform = `rotate(${progress * 360 * 2.1}deg)`;
 
-      // Position phase labels around the gear
+      // Position phase labels around the gear with continuous intensity
+      const continuousIndex = progress * 6;
       PHASE_LABELS.forEach((_, i) => {
         const el = document.getElementById(`phase-label-${i}`);
         if (!el) return;
@@ -96,7 +97,12 @@ export default function Home() {
         const y = 50 + 48 * Math.sin(angleRad);
         el.style.left = `${x}%`;
         el.style.top = `${y}%`;
-        el.classList.toggle('active', i === index);
+
+        let dist = Math.abs(i - continuousIndex);
+        if (dist > 3) dist = 6 - dist;
+        const intensity = Math.max(0, 1 - dist);
+        el.style.opacity = `${0.1 + 0.9 * intensity}`;
+        el.style.fontSize = `${11 + 5 * intensity}px`;
       });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
