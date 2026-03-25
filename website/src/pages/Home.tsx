@@ -13,6 +13,8 @@ const ENGINE_SECTIONS = [
   { name: 'Feedback Layer', type: 'layer' },
 ] as const;
 
+const PHASE_LABELS = ['Awareness', 'Discovery', 'Intent', 'Qualification', 'Engagement', 'Optimization'];
+
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -83,6 +85,19 @@ export default function Home() {
       const sat2 = document.getElementById('home-sat-2');
       if (sat1) sat1.style.transform = `rotate(${progress * 360 * 1.6}deg)`;
       if (sat2) sat2.style.transform = `rotate(${progress * 360 * 2.1}deg)`;
+
+      // Position phase labels around the gear
+      PHASE_LABELS.forEach((_, i) => {
+        const el = document.getElementById(`phase-label-${i}`);
+        if (!el) return;
+        const angleDeg = i * 60 - progress * 360 - 90;
+        const angleRad = angleDeg * Math.PI / 180;
+        const x = 50 + 48 * Math.cos(angleRad);
+        const y = 50 + 48 * Math.sin(angleRad);
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+        el.classList.toggle('active', i === index);
+      });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -306,6 +321,13 @@ export default function Home() {
                 <line x1="548" y1="215" x2="523" y2="225" stroke="var(--eng-orbit-strong)" strokeWidth="1" strokeDasharray="3 7" />
                 <line x1="228" y1="564" x2="242" y2="548" stroke="var(--eng-orbit-strong)" strokeWidth="1" strokeDasharray="3 7" />
               </svg>
+              <div className="engine-phase-ring">
+                {PHASE_LABELS.map((label, i) => (
+                  <span key={i} id={`phase-label-${i}`} className="engine-phase-label">
+                    {label}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -328,7 +350,6 @@ export default function Home() {
                     <span className="ep-stat-num">5</span>
                     <span className="ep-stat-label">Content pillars per engine</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
 
@@ -373,7 +394,6 @@ export default function Home() {
                     <span className="ep-stat-num">8+</span>
                     <span className="ep-stat-label">Signal sources per prospect</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
 
@@ -398,7 +418,6 @@ export default function Home() {
                     <span className="ep-stat-num">12+</span>
                     <span className="ep-stat-label">Enrichment providers in the waterfall</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
 
@@ -419,7 +438,6 @@ export default function Home() {
                     <span className="ep-stat-num">34%</span>
                     <span className="ep-stat-label">Reply rate on first campaign</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
 
@@ -444,7 +462,6 @@ export default function Home() {
                     <span className="ep-stat-num">&infin;</span>
                     <span className="ep-stat-label">Compounding loop</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
             </div>
@@ -658,7 +675,7 @@ function HeroGraphics() {
       </g>
       <g>
         <rect x="28" y="348" width="160" height="88" rx="12" fill="var(--home-accent)" />
-        <text x="42" y="374" fill="var(--home-accent-sub)" fontSize="11" fontFamily="Inter" fontWeight="500">Outbound Engine</text>
+        <text x="42" y="374" fill="rgba(255,255,255,0.7)" fontSize="11" fontFamily="Inter" fontWeight="500">Outbound Engine</text>
         <text x="42" y="406" fill="var(--home-bg)" fontSize="14" fontFamily="Outfit" fontWeight="700">Sequence live</text>
       </g>
       <g>
