@@ -145,10 +145,10 @@ export default function Home() {
       <section className="home-hero">
         <div className="home-hero-content">
           <span className="home-hero-badge">FOR B2B SAAS FOUNDERS</span>
-          <h1>Stop doing outbound<br />from a spreadsheet.</h1>
+          <h1>Your GTM shouldn't<br />depend on you.</h1>
           <p className="home-hero-sub">
-            We build and run your entire outbound engine — data enrichment, multi-channel sequences,
-            and pipeline automation — so you can focus on closing deals and building product.
+            We build the full system — content, intent data, enrichment, and outbound —
+            so pipeline runs while you focus on product.
           </p>
           <div className="home-hero-ctas">
             <a href={CALENDLY} className="btn-primary" target="_blank" rel="noopener noreferrer">
@@ -490,8 +490,8 @@ export default function Home() {
       <section className="home-services" id="services">
         <div className="home-services-header">
           <span className="home-section-label">WHAT WE BUILD FOR YOU</span>
-          <h2 className="home-section-h2">Three pillars of your<br />outbound engine.</h2>
-          <p className="home-section-desc">Everything a founder needs to go from manual outbound to automated pipeline — without hiring an SDR team.</p>
+          <h2 className="home-section-h2">Three pillars of your<br />GTM engine.</h2>
+          <p className="home-section-desc">Everything a founder needs to go from doing GTM manually to a system that generates pipeline on its own.</p>
         </div>
         <div className="home-services-grid">
           <div className="home-service-card">
@@ -522,7 +522,7 @@ export default function Home() {
       <section className="home-how" id="process">
         <div className="home-how-header">
           <span className="home-section-label">HOW IT WORKS</span>
-          <h2 className="home-section-h2">From founder-led outbound<br />to an engine that runs itself.</h2>
+          <h2 className="home-section-h2">From founder-led GTM<br />to an engine that runs itself.</h2>
         </div>
         <div className="home-steps">
           {[
@@ -547,7 +547,7 @@ export default function Home() {
           <span className="home-section-label">WHY KOMMERCIEEL</span>
           <h2 className="home-section-h2">Built for founders<br />who'd rather ship product.</h2>
           <p className="home-section-desc">
-            You didn't raise a round to spend your days writing cold emails. We build the GTM engine so you don't have to.
+            You didn't raise a round to spend your days on GTM. We build the engine — content, signals, enrichment, and outbound — so you don't have to.
           </p>
         </div>
         <div className="home-why-grid">
@@ -559,7 +559,7 @@ export default function Home() {
           <div className="home-why-card">
             <span className="home-why-num">02</span>
             <h3 className="home-why-title">Engineering, not services</h3>
-            <p className="home-why-desc">We don't hire junior SDRs to blast generic emails. We engineer automated systems — data enrichment, intent signals, and multi-channel sequences that run without manual effort.</p>
+            <p className="home-why-desc">We don't hire juniors to do manual work. We engineer automated systems — content distribution, intent capture, data enrichment, and multi-channel outbound that run without you.</p>
           </div>
           <div className="home-why-card">
             <span className="home-why-num">03</span>
@@ -579,10 +579,10 @@ export default function Home() {
         <div className="home-cta-orbit" style={{ width: 300, height: 300, top: -80, left: -80 }} />
         <div className="home-cta-orbit" style={{ width: 400, height: 400, bottom: -50, right: -100 }} />
         <div className="home-cta-content">
-          <span className="home-section-label">STOP DOING OUTBOUND YOURSELF</span>
+          <span className="home-section-label">STOP DOING GTM YOURSELF</span>
           <h2 className="home-section-h2">Let's build your<br />GTM engine.</h2>
           <p className="home-section-desc">
-            15-minute call. We'll map your ICP, audit your current outbound,<br />
+            15-minute call. We'll map your ICP, audit your current GTM,<br />
             and show you exactly what we'd build. No commitment.
           </p>
           <div className="home-cta-btns">
@@ -600,7 +600,7 @@ export default function Home() {
           <div className="home-footer-brand">
             <span className="home-footer-logo">kommercieel</span>
             <p className="home-footer-tagline">
-              We build outbound engines for early-stage B2B SaaS founders who'd rather ship product than send cold emails.
+              We build GTM engines for early-stage B2B SaaS founders who'd rather ship product than do GTM manually.
             </p>
           </div>
           <div className="home-footer-col">
