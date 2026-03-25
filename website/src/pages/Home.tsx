@@ -49,9 +49,9 @@ function ArrowIcon() {
 export default function Home() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('kc-theme') as 'light' | 'dark') || 'dark';
+      return (localStorage.getItem('kc-theme') as 'light' | 'dark') || 'light';
     }
-    return 'dark';
+    return 'light';
   });
 
   const [engineActive, setEngineActive] = useState(0);
