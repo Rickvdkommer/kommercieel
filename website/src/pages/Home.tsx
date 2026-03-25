@@ -489,9 +489,9 @@ export default function Home() {
       {/* ── Services ── */}
       <section className="home-services" id="services">
         <div className="home-services-header">
-          <span className="home-section-label">WHAT WE DO</span>
+          <span className="home-section-label">WHAT WE BUILD FOR YOU</span>
           <h2 className="home-section-h2">Three pillars of<br />predictable growth.</h2>
-          <p className="home-section-desc">We don't just set up tools. We architect complete revenue engines.</p>
+          <p className="home-section-desc">We design, build, and run the entire system — so your team focuses on closing deals.</p>
         </div>
         <div className="home-services-grid">
           <div className="home-service-card">
@@ -499,21 +499,21 @@ export default function Home() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
             <div className="home-service-title">Data<br />Enrichment</div>
-            <p className="home-service-desc">Enrich your ICP data with 40+ sources. Build laser-targeted prospect lists automatically.</p>
+            <p className="home-service-desc">We source and verify your ideal prospects across 40+ data providers — so every lead your team touches is real.</p>
           </div>
           <div className="home-service-card accent">
             <div className="home-service-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </div>
             <div className="home-service-title">Outbound<br />Automation</div>
-            <p className="home-service-desc">Multi-channel sequencing across email, LinkedIn, and phone. Personalized at scale.</p>
+            <p className="home-service-desc">We architect and run multi-channel sequences across email, LinkedIn, and phone — personalized at scale.</p>
           </div>
           <div className="home-service-card">
             <div className="home-service-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
             </div>
             <div className="home-service-title">Pipeline<br />Analytics</div>
-            <p className="home-service-desc">Real-time dashboards showing exactly what's working and what needs optimization.</p>
+            <p className="home-service-desc">We set up real-time dashboards and reporting so you always know what's working and where to double down.</p>
           </div>
         </div>
       </section>
