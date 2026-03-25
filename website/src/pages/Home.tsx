@@ -353,7 +353,6 @@ export default function Home() {
                     <span className="ep-stat-num">40+</span>
                     <span className="ep-stat-label">Data points per prospect</span>
                   </div>
-                  <a href={CALENDLY} className="ep-cta layer" target="_blank" rel="noopener noreferrer">Book a Call &rarr;</a>
                 </div>
               </div>
 
