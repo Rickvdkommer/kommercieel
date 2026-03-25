@@ -1181,20 +1181,21 @@
   .engine-section { height: 500vh; }
   .engine-sticky {
     grid-template-columns: 1fr;
-    grid-template-rows: 40vh 1fr;
+    grid-template-rows: 28vh 1fr;
   }
   .engine-gear-side {
-    padding-top: 72px;
+    padding-top: 56px;
     justify-content: center;
+    align-items: flex-start;
   }
   .engine-gear-side::before,
   .engine-gear-side::after { display: none; }
   .engine-gear-wrap { right: 0; }
   .engine-gear {
-    width: 36vh;
-    height: 36vh;
-    max-width: 300px;
-    max-height: 300px;
+    width: 26vh;
+    height: 26vh;
+    max-width: 220px;
+    max-height: 220px;
   }
   .engine-content-side {
     padding: 20px 24px 80px;
