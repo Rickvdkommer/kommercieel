@@ -90,7 +90,7 @@ export default function Home() {
       PHASE_LABELS.forEach((_, i) => {
         const el = document.getElementById(`phase-label-${i}`);
         if (!el) return;
-        const angleDeg = i * 60 - progress * 360 - 90;
+        const angleDeg = i * 60 - progress * 360 + 180;
         const angleRad = angleDeg * Math.PI / 180;
         const x = 50 + 48 * Math.cos(angleRad);
         const y = 50 + 48 * Math.sin(angleRad);
