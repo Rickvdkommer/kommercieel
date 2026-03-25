@@ -487,10 +487,14 @@ export default function Home() {
 
       {/* ── Ticker ── */}
       <div className="home-ticker">
-        {['DATA ENRICHMENT', 'PIPELINE AUTOMATION', 'OUTBOUND SEQUENCING', 'CRM INTEGRATION', 'INTENT SIGNALS', 'LEAD SCORING'].flatMap((label, i) => [
-          <span key={`t${i}`}>{label}</span>,
-          i < 5 ? <div key={`d${i}`} className="home-ticker-dot" /> : null,
-        ])}
+        {[0, 1].map(copy => (
+          <div key={copy} className="home-ticker-track" aria-hidden={copy === 1 || undefined}>
+            {['DATA ENRICHMENT', 'PIPELINE AUTOMATION', 'OUTBOUND SEQUENCING', 'CRM INTEGRATION', 'INTENT SIGNALS', 'LEAD SCORING'].flatMap((label, i) => [
+              <span key={`t${i}`}>{label}</span>,
+              <div key={`d${i}`} className="home-ticker-dot" />,
+            ])}
+          </div>
+        ))}
       </div>
 
       {/* ── Metrics ── */}

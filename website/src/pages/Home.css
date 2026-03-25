@@ -664,13 +664,22 @@
 /* ─── Ticker ─── */
 .home-ticker {
   display: flex;
-  align-items: center;
-  gap: 40px;
   background: var(--home-ticker-bg);
   height: 56px;
-  padding: 0 40px;
   overflow: hidden;
   white-space: nowrap;
+}
+.home-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding-right: 40px;
+  animation: ticker-scroll 20s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 .home-ticker span {
   font-family: 'Outfit', sans-serif;
