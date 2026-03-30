@@ -56,6 +56,7 @@ export default function Home() {
     return 'light';
   });
 
+  const [mobileNav, setMobileNav] = useState(false);
   const [engineActive, setEngineActive] = useState(0);
   const engineWrapRef = useRef<HTMLDivElement>(null);
   const gearSvgRef = useRef<SVGSVGElement>(null);
@@ -67,6 +68,26 @@ export default function Home() {
 
   // Engine scroll logic
   useEffect(() => {
+    const positionLabels = (progress: number) => {
+      const continuousIndex = progress * 6;
+      PHASE_LABELS.forEach((_, i) => {
+        const el = document.getElementById(`phase-label-${i}`);
+        if (!el) return;
+        const angleDeg = i * 60 - progress * 360 + 180;
+        const angleRad = angleDeg * Math.PI / 180;
+        const x = 50 + 48 * Math.cos(angleRad);
+        const y = 50 + 48 * Math.sin(angleRad);
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+
+        let dist = Math.abs(i - continuousIndex);
+        if (dist > 3) dist = 6 - dist;
+        const intensity = Math.max(0, 1 - dist);
+        el.style.opacity = `${0.1 + 0.9 * intensity}`;
+        el.style.fontSize = `${11 + 5 * intensity}px`;
+      });
+    };
+
     const handleScroll = () => {
       const el = engineWrapRef.current;
       if (!el) return;
@@ -86,25 +107,12 @@ export default function Home() {
       if (sat1) sat1.style.transform = `rotate(${progress * 360 * 1.6}deg)`;
       if (sat2) sat2.style.transform = `rotate(${progress * 360 * 2.1}deg)`;
 
-      // Position phase labels around the gear with continuous intensity
-      const continuousIndex = progress * 6;
-      PHASE_LABELS.forEach((_, i) => {
-        const el = document.getElementById(`phase-label-${i}`);
-        if (!el) return;
-        const angleDeg = i * 60 - progress * 360 + 180;
-        const angleRad = angleDeg * Math.PI / 180;
-        const x = 50 + 48 * Math.cos(angleRad);
-        const y = 50 + 48 * Math.sin(angleRad);
-        el.style.left = `${x}%`;
-        el.style.top = `${y}%`;
-
-        let dist = Math.abs(i - continuousIndex);
-        if (dist > 3) dist = 6 - dist;
-        const intensity = Math.max(0, 1 - dist);
-        el.style.opacity = `${0.1 + 0.9 * intensity}`;
-        el.style.fontSize = `${11 + 5 * intensity}px`;
-      });
+      positionLabels(progress);
     };
+
+    // Initialize label positions on mount
+    positionLabels(0);
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -148,15 +156,18 @@ export default function Home() {
       {/* ── Header ── */}
       <header className="home-header">
         <Link to="/" className="home-header-logo">kommercieel</Link>
-        <nav className="home-header-nav">
-          <a href="#engine">Engine</a>
-          <a href="#services">Services</a>
-          <a href="#why">Why Us</a>
-          <Link to="/gtm-engineers">GTM Engineers</Link>
+        <button className="home-hamburger" onClick={() => setMobileNav(!mobileNav)} aria-label="Toggle menu">
+          <span className={mobileNav ? 'open' : ''} />
+        </button>
+        <nav className={`home-header-nav${mobileNav ? ' open' : ''}`}>
+          <a href="#engine" onClick={() => setMobileNav(false)}>Engine</a>
+          <a href="#services" onClick={() => setMobileNav(false)}>Services</a>
+          <a href="#why" onClick={() => setMobileNav(false)}>Why Us</a>
+          <Link to="/gtm-engineers" onClick={() => setMobileNav(false)}>GTM Engineers</Link>
           <button className="theme-toggle" onClick={toggle} aria-label="Toggle theme">
             {theme === 'light' ? <MoonIcon /> : <SunIcon />}
           </button>
-          <a href={CALENDLY} className="home-nav-cta" target="_blank" rel="noopener noreferrer">
+          <a href={CALENDLY} className="home-nav-cta" target="_blank" rel="noopener noreferrer" onClick={() => setMobileNav(false)}>
             Book a Call <ArrowIcon />
           </a>
         </nav>
@@ -523,24 +534,24 @@ export default function Home() {
         <div className="home-services-grid">
           <div className="home-service-card">
             <div className="home-service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             </div>
-            <div className="home-service-title">Data<br />Enrichment</div>
-            <p className="home-service-desc">We source and verify your ideal prospects across 40+ data providers — so every lead your team touches is real.</p>
+            <div className="home-service-title">Awareness<br />& Content</div>
+            <p className="home-service-desc">Lead magnets, content, and community that pull your ICP in — so your best outbound starts with inbound.</p>
           </div>
           <div className="home-service-card accent">
             <div className="home-service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
             </div>
-            <div className="home-service-title">Outbound<br />Automation</div>
-            <p className="home-service-desc">We architect and run multi-channel sequences across email, LinkedIn, and phone — personalized at scale.</p>
+            <div className="home-service-title">Enrichment<br />& Signals</div>
+            <p className="home-service-desc">We identify intent signals and enrich every prospect with verified data — so you know who's ready to buy and why.</p>
           </div>
           <div className="home-service-card">
             <div className="home-service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </div>
-            <div className="home-service-title">Pipeline<br />Analytics</div>
-            <p className="home-service-desc">We set up real-time dashboards and reporting so you always know what's working and where to double down.</p>
+            <div className="home-service-title">Relevant<br />Outbound</div>
+            <p className="home-service-desc">The right message, to the right person, at the right time — triggered by real signals, not arbitrary cadence.</p>
           </div>
         </div>
       </section>
@@ -632,10 +643,9 @@ export default function Home() {
           </div>
           <div className="home-footer-col">
             <span className="home-footer-col-title">Services</span>
-            <a href="#services">Data Enrichment</a>
-            <a href="#services">Outbound Automation</a>
-            <a href="#services">Pipeline Analytics</a>
-            <a href="#services">CRM Integration</a>
+            <a href="#services">Awareness & Content</a>
+            <a href="#services">Enrichment & Signals</a>
+            <a href="#services">Relevant Outbound</a>
           </div>
           <div className="home-footer-col">
             <span className="home-footer-col-title">Company</span>
